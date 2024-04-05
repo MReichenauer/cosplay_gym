@@ -9,7 +9,9 @@
   <div id="app">
     <h1>Cosplay's gym</h1>
     <button id="registerButton">Register</button>
-    <form id="registrationForm" class="hide registrationForm">
+    <button id="loginButton">Login</button>
+      <!-- registration form -->
+    <form id="registrationForm" class="registrationForm hide ">
       <h2>User Registration</h2>
         <label for="email">Email</label>
         <input type="email"
@@ -48,6 +50,24 @@
           placeholder="Type your height" required />
        
         <button type="submit">Register</button>
+    </form>
+
+    <!-- login form -->
+    <form id="loginForm" class="hide loginForm">
+      <h2>Login</h2>
+        <label for="email">Email</label>
+        <input type="email"
+          id="loginEmail"
+          name="email" 
+          placeholder="Type your email" required />
+       
+        <label for="password">Password</label>
+        <input type="password"
+          id="loginPassword" 
+          name="password" 
+          placeholder="Minimum 6 characters" required />
+
+          <button type="submit">Login</button>
     </form>
 </div>
 <script type="module" src="/src/main.ts"></script>

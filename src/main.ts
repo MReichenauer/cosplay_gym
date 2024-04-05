@@ -1,15 +1,38 @@
-import './style.css';
-import axios from 'axios';
+import "./style.css";
+import axios from "axios";
 
-export const API_BASE_URL = 'http://localhost:3000';
-const registrationForm = document.getElementById('registrationForm');
-const registerBtn = document.getElementById('registerButton');
+export const API_BASE_URL = "http://localhost:3000";
+
+// registration and login forms and buttons
+const registrationForm = document.getElementById("registrationForm");
+const registerBtn = document.getElementById("registerButton");
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginButton");
 
 
-// Event listener for the register button
-registerBtn?.addEventListener('click', () => {
-  registrationForm?.classList.toggle('hide');
+// Toggle the visibility of a element between flex and none
+const toggleElement = (element: HTMLElement, isVisible: boolean) => {
+  if (element) {
+    element.style.display = isVisible ? "flex" : "none";
+  }
+};
+
+// Initial start, show login form
+toggleElement(loginForm!, true);
+toggleElement(registrationForm!, false);
+
+// Register button event
+registerBtn?.addEventListener("click", () => {
+  toggleElement(registrationForm!, true);
+  toggleElement(loginForm!, false);
 });
+
+// Login button event
+loginBtn?.addEventListener("click", () => {
+  toggleElement(loginForm!, true);
+  toggleElement(registrationForm!, false);
+});
+
 
 // Email validation
 const isValidEmail = (email: string): boolean => {
@@ -17,19 +40,19 @@ const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
- // Registration form
+ // Registration form event
  registrationForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
     // Get input field values
-    const emailInput = (document.getElementById('email') as HTMLInputElement).value;
-    const passwordInput = (document.getElementById('password') as HTMLInputElement).value;
-    const first_nameInput = (document.getElementById('first_name') as HTMLInputElement).value;
-    const last_nameInput = (document.getElementById('last_name') as HTMLInputElement).value;
-    const weight = parseFloat((document.getElementById('weight') as HTMLInputElement).value);
-    const height = parseFloat((document.getElementById('height') as HTMLInputElement).value);
+    const emailInput = (document.getElementById("email") as HTMLInputElement).value;
+    const passwordInput = (document.getElementById("password") as HTMLInputElement).value;
+    const first_nameInput = (document.getElementById("first_name") as HTMLInputElement).value;
+    const last_nameInput = (document.getElementById("last_name") as HTMLInputElement).value;
+    const weight = parseFloat((document.getElementById("weight") as HTMLInputElement).value);
+    const height = parseFloat((document.getElementById("height") as HTMLInputElement).value);
 
-    // Get values from input fields and trim whitespace
+    // Get values from input fields and trim them
     const email = emailInput.trim();
     const password = passwordInput.trim();
     const first_name = first_nameInput.trim();
@@ -47,7 +70,7 @@ const isValidEmail = (email: string): boolean => {
       return;
     }
 
-    // Validate first name and last name
+    // Validate first name
     if (first_nameInput.length < 3) {
       alert("First name must be at least 3 characters long.");
       return;
@@ -68,14 +91,15 @@ const isValidEmail = (email: string): boolean => {
         weight,
         height
     };
-    console.log('Submitting registration form', registrationData);
+    console.log("Submitting registration form", registrationData);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/register`, registrationData);
   
       if (response.status === 201) {
         alert("Your registration was successful!");
-        registrationForm?.classList.add('hide')
+        toggleElement(loginForm!, true);
+        toggleElement(registrationForm!, false);
       } else {
         alert("Failed to register account. Please check your inputs and try again.");
       }
