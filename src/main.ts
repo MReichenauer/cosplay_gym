@@ -3,6 +3,14 @@ import axios from "axios";
 
 export const API_BASE_URL = "http://localhost:3000";
 
+// Login and register div
+const registerAndLogin = document.getElementById("appRegisterAndLogin");
+// User data variables
+let userInfo = null;
+// Main app references
+const homeApp = document.getElementById("homeApp");
+const welcomeUser = document.getElementById("welcomeUser");
+
 // registration and login forms and buttons
 const registrationForm = document.getElementById("registrationForm");
 const registerBtn = document.getElementById("registerButton");
@@ -20,6 +28,7 @@ const toggleElement = (element: HTMLElement, isVisible: boolean) => {
 // Initial start, show login form
 toggleElement(loginForm!, true);
 toggleElement(registrationForm!, false);
+toggleElement(homeApp!, false);
 
 // Register button event
 registerBtn?.addEventListener("click", () => {
@@ -119,3 +128,57 @@ const isValidEmail = (email: string): boolean => {
       }
     }
   });
+
+  // Login form event
+  loginForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  // Get the email and password from the login form fields
+  const email = (document.getElementById("loginEmail") as HTMLInputElement).value.trim();
+  const password = (document.getElementById("loginPassword") as HTMLInputElement).value.trim();
+
+  // Validate email
+  if (!isValidEmail(email)) {
+  alert("Please enter a valid email address.");
+  return;
+  }
+
+  // Validate password
+  if (password.length < 6) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+
+  try {
+    const response = await axios.post("http://localhost:3000/login", {
+      email,
+      password
+    });
+
+    const { token } = response.data;
+    console.log(token);
+
+    // Store the token
+    localStorage.setItem("token", token);
+
+    // Set the authorization header
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    // Fetch user profile
+    const profileResponse = await axios.get("http://localhost:3000/profile");
+    userInfo = profileResponse.data;
+    console.log("User profile:", userInfo);
+    console.log("User's first name:", userInfo.data.first_name);
+
+    // Update the page so its adapted for each uniq user
+    welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name} <br><br> strive to be the best version of yourself!`;
+
+    // When user is logged in, hide registerAndLogin and show homeApp
+    toggleElement(homeApp!, true);
+    toggleElement(registerAndLogin!, false);
+  } catch (error) {
+    console.error("Login failed:", error);
+    alert("Failed to login. Please check your email and password and try again.")
+    
+  }
+});
