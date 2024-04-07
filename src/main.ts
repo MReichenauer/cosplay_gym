@@ -3,19 +3,31 @@ import axios from "axios";
 
 export const API_BASE_URL = "http://localhost:3000";
 
+// JWT token that i will use so that a user don't need to login if token is still valid
+let token = localStorage.getItem("token");
+console.log(token);
+
+
 // Login and register div
 const registerAndLogin = document.getElementById("appRegisterAndLogin");
-// User data variables
-let userInfo = null;
-// Main app references
-const homeApp = document.getElementById("homeApp");
-const welcomeUser = document.getElementById("welcomeUser");
 
 // registration and login forms and buttons
 const registrationForm = document.getElementById("registrationForm");
 const registerBtn = document.getElementById("registerButton");
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginButton");
+
+// User data variables
+let userInfo = null;
+
+// Main app div and H2 
+const homeApp = document.getElementById("homeApp");
+const welcomeUser = document.getElementById("welcomeUser");
+
+// View progress button and progress container
+const progressButton = document.getElementById("progressButton")!;
+const progressTitle = document.getElementById("progressTitle")!;
+const progressContainer = document.getElementById("progressContainer")!;
 
 
 // Toggle the visibility of a element between flex and none
@@ -53,7 +65,7 @@ const isValidEmail = (email: string): boolean => {
  registrationForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-    // Get input field values
+    // Get registration input field values
     const emailInput = (document.getElementById("email") as HTMLInputElement).value;
     const passwordInput = (document.getElementById("password") as HTMLInputElement).value;
     const first_nameInput = (document.getElementById("first_name") as HTMLInputElement).value;
@@ -61,7 +73,7 @@ const isValidEmail = (email: string): boolean => {
     const weight = parseFloat((document.getElementById("weight") as HTMLInputElement).value);
     const height = parseFloat((document.getElementById("height") as HTMLInputElement).value);
 
-    // Get values from input fields and trim them
+    // Get trim them
     const email = emailInput.trim();
     const password = passwordInput.trim();
     const first_name = first_nameInput.trim();
@@ -133,7 +145,7 @@ const isValidEmail = (email: string): boolean => {
   loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  // Get the email and password from the login form fields
+  // Get the email and password from the login form fields and trim them
   const email = (document.getElementById("loginEmail") as HTMLInputElement).value.trim();
   const password = (document.getElementById("loginPassword") as HTMLInputElement).value.trim();
 
@@ -150,35 +162,106 @@ const isValidEmail = (email: string): boolean => {
   }
 
   try {
-    const response = await axios.post("http://localhost:3000/login", {
+    const response = await axios.post(`${API_BASE_URL}/login`, {
       email,
       password
     });
 
-    const { token } = response.data;
+    // JWT token
+    let { token } = response.data;
     console.log(token);
 
     // Store the token
     localStorage.setItem("token", token);
 
-    // Set the authorization header
+    // Update the token with each login
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     // Fetch user profile
-    const profileResponse = await axios.get("http://localhost:3000/profile");
+    const profileResponse = await axios.get(`${API_BASE_URL}/profile`);
     userInfo = profileResponse.data;
     console.log("User profile:", userInfo);
     console.log("User's first name:", userInfo.data.first_name);
 
-    // Update the page so its adapted for each uniq user
-    welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name} <br><br> strive to be the best version of yourself!`;
+    // Update the welcome page so it's adapted for each uniq user
+    welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name} <br><br> Strive to be the best version of yourself!`;
 
     // When user is logged in, hide registerAndLogin and show homeApp
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
+
+    // Fetch progress data after successful login
+    fetchProgress(token);
+
   } catch (error) {
     console.error("Login failed:", error);
     alert("Failed to login. Please check your email and password and try again.")
-    
+  }
+});
+
+// Fetch progress data of the authenticated user
+const fetchProgress = async (token: string | null) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/progress`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // progressData will be all of the progress's
+        let progressData = response.data.data; 
+        console.log(progressData);
+
+        // Initially hide progress container
+        progressContainer.style.display = "none";
+
+        // Sort progress data by date with the most recent first
+        progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        console.log("User progress:", progressData);
+
+        // Create a ul for the progress's
+        const progressList = document.createElement("ul");
+
+        // Loop through the progress's and create a li for each
+        progressData.forEach((progress: any) => {
+            const { id, date, exercise, weight, reps } = progress;
+            console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
+
+            // Format the date to "YYYY-MM-DD"
+            const humanDate = new Date(date).toISOString().split('T')[0];
+
+            // Create a li for each progress
+            const progressItem = document.createElement("li");
+            progressItem.id = `progress-${id}`;
+            progressItem.innerHTML = `
+                <p>Date: ${humanDate}</p>
+                <p>Exercise: ${exercise}</p>
+                <p>Weight: ${weight}</p>
+                <p>Reps: ${reps}</p>
+                <hr>`;
+
+            // Append the li to the ul
+            progressList.appendChild(progressItem);
+        });
+
+        // Append ul to progressContainer
+        document.getElementById("progressContainer")?.appendChild(progressList);
+
+    } catch (error) {
+        console.log("Failed to get progress's:", error);
+    }
+};
+
+// Event to show and hide the progress's list
+progressButton.addEventListener("click", () => {
+  // Toggle the visibility of the container for the progress's
+  toggleElement(progressContainer, progressContainer.style.display === "none");
+
+  // Change the button text and title based on if container is hidden or visible
+  if (progressContainer.style.display === "none") {
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+  } else {
+      progressButton.innerText = "Hide Progress";
+      progressTitle.innerText = "Hide Your Progress";
   }
 });
