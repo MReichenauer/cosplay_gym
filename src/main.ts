@@ -20,9 +20,10 @@ const loginBtn = document.getElementById("loginButton");
 // User data variables
 let userInfo = null;
 
-// Main app div and H2 
+// Main app div ,welcomeUser H2, logout button
 const homeApp = document.getElementById("homeApp");
 const welcomeUser = document.getElementById("welcomeUser");
+const logoutButton = document.getElementById("logoutButton");
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
@@ -220,6 +221,7 @@ const fetchProgress = async (token: string | null) => {
 
         // Create a ul for the progress's
         const progressList = document.createElement("ul");
+        progressList.id = `progressListId`
 
         // Loop through the progress's and create a li for each
         progressData.forEach((progress: any) => {
@@ -235,7 +237,7 @@ const fetchProgress = async (token: string | null) => {
             progressItem.innerHTML = `
                 <p>Date: ${humanDate}</p>
                 <p>Exercise: ${exercise}</p>
-                <p>Weight: ${weight}</p>
+                <p>Weight: ${weight} kg</p>
                 <p>Reps: ${reps}</p>
                 <hr>`;
 
@@ -253,6 +255,7 @@ const fetchProgress = async (token: string | null) => {
 
 // Event to show and hide the progress's list
 progressButton.addEventListener("click", () => {
+
   // Toggle the visibility of the container for the progress's
   toggleElement(progressContainer, progressContainer.style.display === "none");
 
@@ -263,5 +266,26 @@ progressButton.addEventListener("click", () => {
   } else {
       progressButton.innerText = "Hide Progress";
       progressTitle.innerText = "Hide Your Progress";
+  }
+});
+
+// Event to logout
+logoutButton?.addEventListener("click", () => {
+
+  // Remove token from local storage
+  localStorage.removeItem("token");
+  console.log(token);
+
+  // Show initial start
+  toggleElement(homeApp!, false);
+  toggleElement(registerAndLogin!, true);
+  
+  // Set flex direction on registerAndLogin div
+  registerAndLogin!.style.flexDirection = "column";
+
+  // Remove the user's progress list
+  const progressList = document.getElementById("progressListId");
+  if (progressList) {
+      progressList.remove();
   }
 });
