@@ -20,11 +20,14 @@ const loginBtn = document.getElementById("loginButton");
 // User data variables
 let userInfo = null;
 
-// Main app div ,welcomeUser H2, progressList, logout button
+// Main app div ,welcomeUser H2, progressList, logout button, addProgressForm, addProgressButton
 const homeApp = document.getElementById("homeApp");
 const welcomeUser = document.getElementById("welcomeUser");
 const progressList = document.getElementById("progressListId");
 const logoutButton = document.getElementById("logoutButton");
+const addProgressButton = document.getElementById("addProgressButton");
+const addProgressForm = document.getElementById("addProgressForm");
+
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
@@ -55,7 +58,6 @@ loginBtn?.addEventListener("click", () => {
   toggleElement(loginForm!, true);
   toggleElement(registrationForm!, false);
 });
-
 
 // Email validation
 const isValidEmail = (email: string): boolean => {
@@ -170,7 +172,7 @@ const isValidEmail = (email: string): boolean => {
     });
 
     // JWT token
-    let { token } = response.data;
+    let token  = response.data.token;
     console.log(token);
 
     // Store the token
@@ -178,6 +180,10 @@ const isValidEmail = (email: string): boolean => {
 
     // Update the token with each login
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    // Update the token variable
+    token = localStorage.getItem("token");
+    console.log("updated token", token);
 
     // Fetch user profile
     const profileResponse = await axios.get(`${API_BASE_URL}/profile`);
@@ -191,6 +197,7 @@ const isValidEmail = (email: string): boolean => {
     // When user is logged in, hide registerAndLogin and show homeApp
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
+    toggleElement(addProgressForm!, false);
 
     // Fetch progress data after successful login
     fetchProgress(token);
@@ -285,12 +292,80 @@ progressButton.addEventListener("click", () => {
   }
 });
 
+// Initially hide the form to add a new progress 
+let isFormVisible = false;
+
+// Toggle the visibility of the form
+addProgressButton?.addEventListener("click", () => {
+  isFormVisible = !isFormVisible;
+  toggleElement(addProgressForm!, isFormVisible);
+});
+
+// Submit even to do a POST of the new progress
+addProgressForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const token = localStorage.getItem("token");
+  if (token) {
+    localStorage.getItem(token);
+  } else alert("something wrong")
+ 
+  // Get the values from the form fields
+  const date = (document.getElementById("date") as HTMLInputElement).value;
+  const exercise = (document.getElementById("exercise") as HTMLInputElement).value;
+  const weight = parseInt((document.getElementById("exerciseWeight") as HTMLInputElement).value);
+  const reps = parseInt((document.getElementById("reps") as HTMLInputElement).value);
+
+  // The body of the POST
+  const progressData = {
+    date,
+    exercise,
+    weight,
+    reps
+  };
+
+  try {
+    // Send a POST request to add progress
+    await axios.post(`${API_BASE_URL}/progress`, progressData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    console.log(progressData);
+
+    // If the POST is successful, hide the form
+    toggleElement(addProgressForm!, false);
+
+      // Remove the user's progress list
+      while (progressList!.firstChild) {
+        progressList!.removeChild(progressList!.firstChild);
+      }
+
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+
+    // Fetch and update the progress list
+    fetchProgress(token);
+
+    // Clear the form fields
+    (document.getElementById("date") as HTMLInputElement).value = "";
+    (document.getElementById("exercise") as HTMLInputElement).value = "";
+    (document.getElementById("exerciseWeight") as HTMLInputElement).value = "";
+    (document.getElementById("reps") as HTMLInputElement).value = "";
+
+    alert("Progress added successfully!");
+  } catch (error) {
+    console.log("Error adding progress:", error);
+    alert("Failed to add progress. Please try again.");
+  }
+});
+
 // Event to logout
 logoutButton?.addEventListener("click", () => {
 
   // Remove token from local storage
   localStorage.removeItem("token");
-  console.log(token);
+  token = null;
+  console.log("logout token shall be null", token);
 
   // Show initial start
   toggleElement(homeApp!, false);
@@ -348,6 +423,7 @@ const autoLogin = async () => {
     // Show homeApp and hide registerAndLogin
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
+    toggleElement(addProgressForm!, false);
 
     // Fetch progress data after successful login
     fetchProgress(localStorage.getItem("token"));

@@ -31,12 +31,12 @@ flex-direction: column;
 }
 
 
-#registerButton, #loginButton, #logoutButton {
+#registerButton, #loginButton, #logoutButton, #addButton {
   display: block;
   margin: 20px auto;
 }
 
-.registrationForm, .loginForm{
+.registrationForm, .loginForm, .addProgressFormClass{
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -48,12 +48,12 @@ flex-direction: column;
   border-radius: 10px;
 }
 
-.registrationForm input, .loginForm input{
+.registrationForm input, .loginForm input, .addProgressForm input{
   margin-bottom: 10px;
   height: 26px;
 }
 
-.registrationForm label, .loginForm label{
+.registrationForm label, .loginForm label, .addProgressForm label{
   font-size: 18px;
   font-weight: bold;
 }
