@@ -133,11 +133,11 @@ const isValidEmail = (email: string): boolean => {
           const errorMsg = response.data?.data?.[0]?.msg || "Failed to register user. Please try again.";
           alert(errorMsg);
         } else {
-          console.error("Network error:", error);
+          console.log("Network error:", error);
           alert("Failed to connect to the server. Please check your internet connection and try again.");
         }
       } else {
-        console.error("Error registering user:", error);
+        console.log("Error registering user:", error);
         alert("An unexpected error occurred. Please try again later.");
       }
     }
@@ -196,7 +196,7 @@ const isValidEmail = (email: string): boolean => {
     fetchProgress(token);
 
   } catch (error) {
-    console.error("Login failed:", error);
+    console.log("Login failed:", error);
     alert("Failed to login. Please check your email and password and try again.")
   }
 });
@@ -253,7 +253,7 @@ const fetchProgress = async (token: string | null) => {
                   progressItem.remove();
                   console.log("Progress item deleted successfully.");
               } catch (error) {
-                  console.error("Failed to delete progress:", error);
+                  console.log("Failed to delete progress:", error);
                   alert("Failed to delete progress.");
               }
           });
@@ -309,3 +309,79 @@ logoutButton?.addEventListener("click", () => {
   }
 
 });
+
+// Combined function to handle auto-login
+const autoLogin = async () => {
+  try {
+    // Check if token exists in local storage
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Token doesn't exist, reset UI and return
+      localStorage.removeItem("token");
+
+      // Show initial start
+      // Show initial start
+  toggleElement(homeApp!, false);
+  toggleElement(registerAndLogin!, true);
+  
+  // Set flex direction on registerAndLogin div
+  registerAndLogin!.style.flexDirection = "column";
+
+  // Reset progress window to initial state
+  progressButton.innerText = "Show Progress";
+  progressTitle.innerText = "View Your Progress";
+      return;
+    }
+
+    // Attempt to fetch user profile using the token
+    const response = await axios.get(`${API_BASE_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // User profile fetched successfully
+    const profileData = response.data;
+    console.log("Auto-login successful. User profile:", profileData);
+
+    // Update UI for logged-in user
+    // Update the welcome page
+    welcomeUser!.innerHTML = `Welcome ${profileData.data.first_name} <br><br> Strive to be the best version of yourself!`;
+
+    // Show homeApp and hide registerAndLogin
+    toggleElement(homeApp!, true);
+    toggleElement(registerAndLogin!, false);
+
+    // Fetch progress data after successful login
+    fetchProgress(localStorage.getItem("token"));
+  } catch (error) {
+    // Auto-login failed, handle the error
+    console.error("Auto-login failed:", error);
+
+    // Reset UI to initial state
+    localStorage.removeItem("token");
+
+    // Show initial start
+    // Show initial start
+  toggleElement(homeApp!, false);
+  toggleElement(registerAndLogin!, true);
+  
+  // Set flex direction on registerAndLogin div
+  registerAndLogin!.style.flexDirection = "column";
+
+  // Reset progress window to initial state
+  progressButton.innerText = "Show Progress";
+  progressTitle.innerText = "View Your Progress";
+  }
+};
+
+// Function to update UI for logged-in user
+const updateUIForLoggedInUser = (profileData: any) => {
+  
+};
+
+// Function to reset UI to initial state
+const resetUI = () => {
+  
+};
+
+// Call autoLogin function when the page loads
+window.addEventListener("DOMContentLoaded", autoLogin);
