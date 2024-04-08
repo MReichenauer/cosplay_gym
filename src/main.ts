@@ -310,39 +310,38 @@ logoutButton?.addEventListener("click", () => {
 
 });
 
-// Combined function to handle auto-login
+// Auto login with stored token
 const autoLogin = async () => {
   try {
     // Check if token exists in local storage
     const token = localStorage.getItem("token");
     if (!token) {
-      // Token doesn't exist, reset UI and return
+
+      // Remove old token
       localStorage.removeItem("token");
 
       // Show initial start
-      // Show initial start
-  toggleElement(homeApp!, false);
-  toggleElement(registerAndLogin!, true);
-  
-  // Set flex direction on registerAndLogin div
-  registerAndLogin!.style.flexDirection = "column";
+      toggleElement(homeApp!, false);
+      toggleElement(registerAndLogin!, true);
+      
+      // Set flex direction on registerAndLogin div
+      registerAndLogin!.style.flexDirection = "column";
 
-  // Reset progress window to initial state
-  progressButton.innerText = "Show Progress";
-  progressTitle.innerText = "View Your Progress";
+      // Reset progress window to initial state
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
       return;
     }
 
-    // Attempt to fetch user profile using the token
+    // Fetch user profile using the token
     const response = await axios.get(`${API_BASE_URL}/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
     // User profile fetched successfully
     const profileData = response.data;
-    console.log("Auto-login successful. User profile:", profileData);
+    console.log("Auto login successful. User profile:", profileData);
 
-    // Update UI for logged-in user
     // Update the welcome page
     welcomeUser!.innerHTML = `Welcome ${profileData.data.first_name} <br><br> Strive to be the best version of yourself!`;
 
@@ -353,35 +352,26 @@ const autoLogin = async () => {
     // Fetch progress data after successful login
     fetchProgress(localStorage.getItem("token"));
   } catch (error) {
-    // Auto-login failed, handle the error
-    console.error("Auto-login failed:", error);
 
-    // Reset UI to initial state
+    // Auto login failed
+    console.log("Auto login failed:", error);
+
+    // Remove old token
     localStorage.removeItem("token");
 
     // Show initial start
-    // Show initial start
-  toggleElement(homeApp!, false);
-  toggleElement(registerAndLogin!, true);
+    toggleElement(homeApp!, false);
+    toggleElement(registerAndLogin!, true);
   
-  // Set flex direction on registerAndLogin div
-  registerAndLogin!.style.flexDirection = "column";
+    // Set flex direction on registerAndLogin div
+    registerAndLogin!.style.flexDirection = "column";
 
-  // Reset progress window to initial state
-  progressButton.innerText = "Show Progress";
-  progressTitle.innerText = "View Your Progress";
+    // Reset progress window to initial state
+    progressButton.innerText = "Show Progress";
+    progressTitle.innerText = "View Your Progress";
   }
 };
 
-// Function to update UI for logged-in user
-const updateUIForLoggedInUser = (profileData: any) => {
-  
-};
 
-// Function to reset UI to initial state
-const resetUI = () => {
-  
-};
-
-// Call autoLogin function when the page loads
+// Call autoLogin initially at start
 window.addEventListener("DOMContentLoaded", autoLogin);
