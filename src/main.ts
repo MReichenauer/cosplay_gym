@@ -20,9 +20,10 @@ const loginBtn = document.getElementById("loginButton");
 // User data variables
 let userInfo = null;
 
-// Main app div ,welcomeUser H2, logout button
+// Main app div ,welcomeUser H2, progressList, logout button
 const homeApp = document.getElementById("homeApp");
 const welcomeUser = document.getElementById("welcomeUser");
+const progressList = document.getElementById("progressListId");
 const logoutButton = document.getElementById("logoutButton");
 
 // View progress button and progress container
@@ -202,55 +203,70 @@ const isValidEmail = (email: string): boolean => {
 
 // Fetch progress data of the authenticated user
 const fetchProgress = async (token: string | null) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/progress`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+  try {
+      const response = await axios.get(`${API_BASE_URL}/progress`, {
+          headers: { Authorization: `Bearer ${token}` }
+      });
 
-        // progressData will be all of the progress's
-        let progressData = response.data.data; 
-        console.log(progressData);
+      // progressData will be all of the progress's
+      let progressData = response.data.data; 
+      console.log(progressData);
 
-        // Initially hide progress container
-        progressContainer.style.display = "none";
+      // Initially hide progress container
+      progressContainer.style.display = "none";
 
-        // Sort progress data by date with the most recent first
-        progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      // Sort progress data by date with the most recent first
+      progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-        console.log("User progress:", progressData);
+      console.log("User progress:", progressData);
 
-        // Create a ul for the progress's
-        const progressList = document.createElement("ul");
-        progressList.id = `progressListId`
+      // Loop through the progress's and create a li for each
+      progressData.forEach((progress: any) => {
+          const { id, date, exercise, weight, reps } = progress;
+          console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
 
-        // Loop through the progress's and create a li for each
-        progressData.forEach((progress: any) => {
-            const { id, date, exercise, weight, reps } = progress;
-            console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
+          // Format the date to "YYYY-MM-DD"
+          const humanDate = new Date(date).toISOString().split("T")[0];
 
-            // Format the date to "YYYY-MM-DD"
-            const humanDate = new Date(date).toISOString().split('T')[0];
+          // Create a li for each progress
+          const progressItem = document.createElement("li");
+          progressItem.id = `progress-${id}`;
+          progressItem.innerHTML = `
+              <p>Date <br> ${humanDate}</p>
+              <p>Exercise <br> ${exercise}</p>
+              <p>Weight <br> ${weight} kg</p>
+              <p>Reps <br> ${reps}</p>
+              <span class="editProgress">✏️</span>
+              <span class="deleteProgress">🗑️</span>
+          `;
 
-            // Create a li for each progress
-            const progressItem = document.createElement("li");
-            progressItem.id = `progress-${id}`;
-            progressItem.innerHTML = `
-                <p>Date: ${humanDate}</p>
-                <p>Exercise: ${exercise}</p>
-                <p>Weight: ${weight} kg</p>
-                <p>Reps: ${reps}</p>
-                <hr>`;
+          // Event to delete a progress
+          const deleteButton = progressItem.querySelector(".deleteProgress") as HTMLElement;
+          deleteButton.addEventListener("click", async () => {
+              try {
+                  // Delete the progress fom the database
+                  await axios.delete(`${API_BASE_URL}/progress/${id}`, {
+                      headers: { Authorization: `Bearer ${token}` }
+                  });
+                  
+                  // If DELETE is successful, delete it from the list as well
+                  progressItem.remove();
+                  console.log("Progress item deleted successfully.");
+              } catch (error) {
+                  console.error("Failed to delete progress:", error);
+                  alert("Failed to delete progress.");
+              }
+          });
 
-            // Append the li to the ul
-            progressList.appendChild(progressItem);
-        });
+          // Append the li to the progress's list
+          progressList!.appendChild(progressItem);
+      });
 
-        // Append ul to progressContainer
-        document.getElementById("progressContainer")?.appendChild(progressList);
+   
 
-    } catch (error) {
-        console.log("Failed to get progress's:", error);
-    }
+  } catch (error) {
+      console.log("Failed to get progress's:", error);
+  }
 };
 
 // Event to show and hide the progress's list
@@ -283,9 +299,13 @@ logoutButton?.addEventListener("click", () => {
   // Set flex direction on registerAndLogin div
   registerAndLogin!.style.flexDirection = "column";
 
+  // Reset progress window to initial state
+  progressButton.innerText = "Show Progress";
+  progressTitle.innerText = "View Your Progress";
+
   // Remove the user's progress list
-  const progressList = document.getElementById("progressListId");
-  if (progressList) {
-      progressList.remove();
+  while (progressList!.firstChild) {
+    progressList!.removeChild(progressList!.firstChild);
   }
+
 });
