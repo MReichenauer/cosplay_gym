@@ -469,16 +469,16 @@ progressList!.addEventListener("click", (e) => {
     const id = target.parentElement!.id.split("-")[1];
     const progressItem = document.getElementById(`progress-${id}`)!;
 
-   // Extract the value of the fields and slicing it accordingly from the selected item in progress list
-   const dateElement = progressItem.querySelector("p:nth-of-type(1)")!.textContent!.trim()
-   console.log("Not sliced date:",dateElement);
-   const date = dateElement.slice(6);
-   console.log("Sliced date:", date)
+    // Extract the value of the fields and slicing it accordingly from the selected item in progress list
+    const dateElement = progressItem.querySelector("p:nth-of-type(1)")!.textContent!.trim()
+    console.log("Not sliced date:",dateElement);
+    const date = dateElement.slice(6);
+    console.log("Sliced date:", date)
       
-   const exercise = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
-   const weightString = progressItem.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
-   const weight = weightString.slice(0, -3);
-   const reps = progressItem.querySelector("p:nth-of-type(4)")!.textContent!.slice(6);
+    const exercise = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
+    const weightString = progressItem.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
+    const weight = weightString.slice(0, -3);
+    const reps = progressItem.querySelector("p:nth-of-type(4)")!.textContent!.slice(6);
 
     // Adding the initial progress data to the edit fields
     (document.getElementById("editProgressId") as HTMLInputElement).value = id;
