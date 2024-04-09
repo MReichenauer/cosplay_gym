@@ -14,16 +14,15 @@ h2 {
 }
 
 #app {
+  height: 100vh;
+  width: 100%;
   text-align: center;
 }
 
 #homeApp  {
-height: 100vh;
-width: 90vw;
-margin-left: auto;
-margin-right: auto;
 display: flex;
 flex-direction: column;
+justify-content: center; 
 }
 
 .hide {
@@ -31,12 +30,13 @@ flex-direction: column;
 }
 
 
-#registerButton, #loginButton, #logoutButton, #addButton {
+#registerButton, #loginButton, #logoutButton, #addButton, 
+#cancelAddProgressButton, #updateProgressButton, #cancelProgressButton {
   display: block;
   margin: 20px auto;
 }
 
-.registrationForm, .loginForm, .addProgressFormClass{
+.registrationForm, .loginForm, .addProgressFormClass, .editProgressFormClass{
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -65,14 +65,19 @@ flex-direction: column;
 
 #startPage {
   margin: 20px auto;
-  width: 300px;
-  padding: 2rem;
+  width: 100%;
+  padding: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border: 1px solid #0f0a0a;
   border-radius: 10px;
 }
 
 #progressContainer {
   justify-content: center; 
+  width: 100%;
+  padding: 0;
+  padding-bottom: 1rem;
 }
 
 #progressContainer ul {
@@ -95,4 +100,19 @@ flex-direction: column;
   width: 100%;
   height: 4.5rem;
   
+}
+
+.addProgressFormClass, .editProgressFormClass  { 
+  width: 90%;
+  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 0.2rem;
+  margin-bottom: 2rem;
+}
+
+#editProgressButtons, #addProgressButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20%;
+  margin-right: 20%;
 }

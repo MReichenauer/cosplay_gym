@@ -27,12 +27,16 @@ const progressList = document.getElementById("progressListId");
 const logoutButton = document.getElementById("logoutButton");
 const addProgressButton = document.getElementById("addProgressButton");
 const addProgressForm = document.getElementById("addProgressForm");
-
+const cancelAddProgressButton = document.getElementById("cancelAddProgressButton")
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
 const progressTitle = document.getElementById("progressTitle")!;
 const progressContainer = document.getElementById("progressContainer")!;
+
+// Edit progress form, cancel edit progress button
+const editProgressForm = document.getElementById("editProgressForm")
+const cancelProgressButton = document.getElementById("cancelProgressButton")
 
 
 // Toggle the visibility of a element between flex and none
@@ -46,6 +50,7 @@ const toggleElement = (element: HTMLElement, isVisible: boolean) => {
 toggleElement(loginForm!, true);
 toggleElement(registrationForm!, false);
 toggleElement(homeApp!, false);
+toggleElement(editProgressForm!, false);
 
 // Register button event
 registerBtn?.addEventListener("click", () => {
@@ -208,157 +213,6 @@ const isValidEmail = (email: string): boolean => {
   }
 });
 
-// Fetch progress data of the authenticated user
-const fetchProgress = async (token: string | null) => {
-  try {
-      const response = await axios.get(`${API_BASE_URL}/progress`, {
-          headers: { Authorization: `Bearer ${token}` }
-      });
-
-      // progressData will be all of the progress's
-      let progressData = response.data.data; 
-      console.log(progressData);
-
-      // Initially hide progress container
-      progressContainer.style.display = "none";
-
-      // Sort progress data by date with the most recent first
-      progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-      console.log("User progress:", progressData);
-
-      // Loop through the progress's and create a li for each
-      progressData.forEach((progress: any) => {
-          const { id, date, exercise, weight, reps } = progress;
-          console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
-
-          // Format the date to "YYYY-MM-DD"
-          const humanDate = new Date(date).toISOString().split("T")[0];
-
-          // Create a li for each progress
-          const progressItem = document.createElement("li");
-          progressItem.id = `progress-${id}`;
-          progressItem.innerHTML = `
-              <p>Date <br> ${humanDate}</p>
-              <p>Exercise <br> ${exercise}</p>
-              <p>Weight <br> ${weight} kg</p>
-              <p>Reps <br> ${reps}</p>
-              <span class="editProgress">✏️</span>
-              <span class="deleteProgress">🗑️</span>
-          `;
-
-          // Event to delete a progress
-          const deleteButton = progressItem.querySelector(".deleteProgress") as HTMLElement;
-          deleteButton.addEventListener("click", async () => {
-              try {
-                  // Delete the progress fom the database
-                  await axios.delete(`${API_BASE_URL}/progress/${id}`, {
-                      headers: { Authorization: `Bearer ${token}` }
-                  });
-                  
-                  // If DELETE is successful, delete it from the list as well
-                  progressItem.remove();
-                  console.log("Progress item deleted successfully.");
-              } catch (error) {
-                  console.log("Failed to delete progress:", error);
-                  alert("Failed to delete progress.");
-              }
-          });
-
-          // Append the li to the progress's list
-          progressList!.appendChild(progressItem);
-      });
-
-   
-
-  } catch (error) {
-      console.log("Failed to get progress's:", error);
-  }
-};
-
-// Event to show and hide the progress's list
-progressButton.addEventListener("click", () => {
-
-  // Toggle the visibility of the container for the progress's
-  toggleElement(progressContainer, progressContainer.style.display === "none");
-
-  // Change the button text and title based on if container is hidden or visible
-  if (progressContainer.style.display === "none") {
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
-  } else {
-      progressButton.innerText = "Hide Progress";
-      progressTitle.innerText = "Hide Your Progress";
-  }
-});
-
-// Initially hide the form to add a new progress 
-let isFormVisible = false;
-
-// Toggle the visibility of the form
-addProgressButton?.addEventListener("click", () => {
-  isFormVisible = !isFormVisible;
-  toggleElement(addProgressForm!, isFormVisible);
-});
-
-// Submit even to do a POST of the new progress
-addProgressForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  
-  const token = localStorage.getItem("token");
-  if (token) {
-    localStorage.getItem(token);
-  } else alert("something wrong")
- 
-  // Get the values from the form fields
-  const date = (document.getElementById("date") as HTMLInputElement).value;
-  const exercise = (document.getElementById("exercise") as HTMLInputElement).value;
-  const weight = parseInt((document.getElementById("exerciseWeight") as HTMLInputElement).value);
-  const reps = parseInt((document.getElementById("reps") as HTMLInputElement).value);
-
-  // The body of the POST
-  const progressData = {
-    date,
-    exercise,
-    weight,
-    reps
-  };
-
-  try {
-    // Send a POST request to add progress
-    await axios.post(`${API_BASE_URL}/progress`, progressData, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    console.log(progressData);
-
-    // If the POST is successful, hide the form
-    toggleElement(addProgressForm!, false);
-
-      // Remove the user's progress list
-      while (progressList!.firstChild) {
-        progressList!.removeChild(progressList!.firstChild);
-      }
-
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
-
-    // Fetch and update the progress list
-    fetchProgress(token);
-
-    // Clear the form fields
-    (document.getElementById("date") as HTMLInputElement).value = "";
-    (document.getElementById("exercise") as HTMLInputElement).value = "";
-    (document.getElementById("exerciseWeight") as HTMLInputElement).value = "";
-    (document.getElementById("reps") as HTMLInputElement).value = "";
-
-    alert("Progress added successfully!");
-  } catch (error) {
-    console.log("Error adding progress:", error);
-    alert("Failed to add progress. Please try again.");
-  }
-});
-
 // Event to logout
 logoutButton?.addEventListener("click", () => {
 
@@ -382,7 +236,6 @@ logoutButton?.addEventListener("click", () => {
   while (progressList!.firstChild) {
     progressList!.removeChild(progressList!.firstChild);
   }
-
 });
 
 // Auto login with stored token
@@ -448,6 +301,251 @@ const autoLogin = async () => {
   }
 };
 
+// Fetch progress data of the authenticated user
+const fetchProgress = async (token: string | null) => {
+  try {
+      const response = await axios.get(`${API_BASE_URL}/progress`, {
+          headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // progressData will be all of the progress's
+      let progressData = response.data.data; 
+      console.log(progressData);
+
+      // Initially hide progress container
+      progressContainer.style.display = "none";
+
+      // Sort progress data by date with the most recent first
+      progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      console.log("User progress:", progressData);
+
+      // Loop through the progress's and create a li for each
+      progressData.forEach((progress: any) => {
+          const { id, date, exercise, weight, reps } = progress;
+          console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
+
+          // Format the date to "YYYY-MM-DD"
+          const humanDate = new Date(date).toISOString().split("T")[0];
+
+          // Create a li for each progress
+          const progressItem = document.createElement("li");
+          progressItem.id = `progress-${id}`;
+          progressItem.innerHTML = `
+              <p>Date <br> ${humanDate}</p>
+              <p>Exercise <br> ${exercise}</p>
+              <p>Weight <br> ${weight} kg</p>
+              <p>Reps <br> ${reps}</p>
+              <span class="editProgress">✏️</span>
+              <span class="deleteProgress">🗑️</span>
+          `;
+
+          // Event to delete a progress
+          const deleteButton = progressItem.querySelector(".deleteProgress") as HTMLElement;
+          deleteButton.addEventListener("click", async () => {
+              try {
+                  // Delete the progress fom the database
+                  await axios.delete(`${API_BASE_URL}/progress/${id}`, {
+                      headers: { Authorization: `Bearer ${token}` }
+                  });
+                  
+                  // If DELETE is successful, delete it from the list as well
+                  progressItem.remove();
+                  console.log("Progress item deleted successfully.");
+              } catch (error) {
+                  console.log("Failed to delete progress:", error);
+                  alert("Failed to delete progress.");
+              }
+          });
+
+          // Append the li to the progress's list
+          progressList!.appendChild(progressItem);
+      });
+
+  } catch (error) {
+      console.log("Failed to get progress's:", error);
+  }
+};
+
+// Event to show and hide the progress's list
+progressButton.addEventListener("click", () => {
+
+  // Toggle the visibility of the container for the progress's
+  toggleElement(progressContainer, progressContainer.style.display === "none");
+
+  // Change the button text and title based on if container is hidden or visible
+  if (progressContainer.style.display === "none") {
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+  } else {
+      progressButton.innerText = "Hide Progress";
+      progressTitle.innerText = "Hide Your Progress";
+  }
+});
+
+// Initially hide the form to add a new progress 
+let isFormVisible = false;
+
+// Toggle the visibility of the form
+addProgressButton?.addEventListener("click", () => {
+  isFormVisible = !isFormVisible;
+  toggleElement(addProgressForm!, isFormVisible);
+  toggleElement(editProgressForm!, false);
+});
+
+// Submit even to do a POST of the new progress
+addProgressForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const token = localStorage.getItem("token");
+  if (token) {
+    localStorage.getItem(token);
+  } else alert("something wrong")
+ 
+  // Get the values from the form fields
+  const date = (document.getElementById("date") as HTMLInputElement).value;
+  const exercise = (document.getElementById("exercise") as HTMLInputElement).value;
+  const weight = parseInt((document.getElementById("exerciseWeight") as HTMLInputElement).value);
+  const reps = parseInt((document.getElementById("reps") as HTMLInputElement).value);
+
+  // The body of the POST
+  const progressData = {
+    date,
+    exercise,
+    weight,
+    reps
+  };
+
+  try {
+    // Send a POST request to add progress
+    await axios.post(`${API_BASE_URL}/progress`, progressData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    console.log(progressData);
+
+    // If the POST is successful, hide the form
+    toggleElement(addProgressForm!, false);
+
+      // Remove the user's progress list
+      while (progressList!.firstChild) {
+        progressList!.removeChild(progressList!.firstChild);
+      }
+
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+
+    // Fetch and update the progress list
+    fetchProgress(token);
+
+    // Clear the form fields
+    (document.getElementById("date") as HTMLInputElement).value = "";
+    (document.getElementById("exercise") as HTMLInputElement).value = "";
+    (document.getElementById("exerciseWeight") as HTMLInputElement).value = "";
+    (document.getElementById("reps") as HTMLInputElement).value = "";
+
+    alert("Progress added successfully!");
+  } catch (error) {
+    console.log("Error adding progress:", error);
+    alert("Failed to add progress. Please try again.");
+  }
+});
+// Close the update progress form
+cancelAddProgressButton!.addEventListener("click", () => {
+  toggleElement(addProgressForm!, false);
+
+  // Clear the form fields
+  (document.getElementById("date") as HTMLInputElement).value = "";
+  (document.getElementById("exercise") as HTMLInputElement).value = "";
+  (document.getElementById("exerciseWeight") as HTMLInputElement).value = "";
+  (document.getElementById("reps") as HTMLInputElement).value = "";
+});
+
+// Event to edit a progress
+progressList!.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+  if (target.classList.contains("editProgress")) {
+    toggleElement(addProgressForm!, false);
+    const id = target.parentElement!.id.split("-")[1];
+    const progressItem = document.getElementById(`progress-${id}`)!;
+
+   // Extract the value of the fields and slicing it accordingly from the selected item in progress list
+   const dateElement = progressItem.querySelector("p:nth-of-type(1)")!.textContent!.trim()
+   console.log("Not sliced date:",dateElement);
+   const date = dateElement.slice(6);
+   console.log("Sliced date:", date)
+      
+   const exercise = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
+   const weightString = progressItem.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
+   const weight = weightString.slice(0, -3);
+   const reps = progressItem.querySelector("p:nth-of-type(4)")!.textContent!.slice(6);
+
+    // Adding the initial progress data to the edit fields
+    (document.getElementById("editProgressId") as HTMLInputElement).value = id;
+    (document.getElementById("editDate") as HTMLInputElement).value = date;
+    (document.getElementById("editExercise") as HTMLInputElement).value = exercise;
+    (document.getElementById("editExerciseWeight") as HTMLInputElement).value = weight;
+    (document.getElementById("editReps") as HTMLInputElement).value = reps;
+
+    // Show the edit form
+    toggleElement(editProgressForm!, true);
+  }
+});
+
+// Submit event for the edited progress to update it in database
+editProgressForm!.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem("token");
+
+  // Get the values from the edit form fields
+  const id = (document.getElementById("editProgressId") as HTMLInputElement).value;
+  const date = (document.getElementById("editDate") as HTMLInputElement).value;
+  const exercise = (document.getElementById("editExercise") as HTMLInputElement).value;
+  const weight = parseInt((document.getElementById("editExerciseWeight") as HTMLInputElement).value);
+  const reps = parseInt((document.getElementById("editReps") as HTMLInputElement).value);
+
+  // The body of the PATCH request
+  const updatedProgressData = {
+    date: date + "T00:00:00.000Z",
+    weight,
+    exercise,
+    reps
+  };
+
+  console.log(updatedProgressData);
+
+  try {
+    // Send a PATCH request to update the selected progress
+    await axios.patch(`${API_BASE_URL}/progress/${id}`, updatedProgressData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // If the PATCH is successful, hide the edit form
+    toggleElement(editProgressForm!, false);
+
+    // Reset progress button and text to initial state
+    progressButton.innerText = "Show Progress";
+    progressTitle.innerText = "View Your Progress";
+
+    // Remove the user's old progress list from DOM
+    while (progressList!.firstChild) {
+      progressList!.removeChild(progressList!.firstChild);
+    }
+
+    // Update the progress list and send it to DOM
+    fetchProgress(token);
+
+    alert("Progress updated successfully!");
+  } catch (error) {
+    console.log("Error updating progress:", error);
+    alert("Failed to update progress. Please try again.");
+  }
+});
+
+// Close the edit progress form
+cancelProgressButton!.addEventListener("click", () => {
+  toggleElement(editProgressForm!, false);
+});
 
 // Call autoLogin initially at start
 window.addEventListener("DOMContentLoaded", autoLogin);

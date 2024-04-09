@@ -11,7 +11,7 @@
       <h1>Cosplay's gym</h1>
       <button id="registerButton">Register</button>
       <button id="loginButton">Login</button>
-        <!-- registration form -->
+        <!-- Registration form -->
       <form id="registrationForm" class="registrationForm hide ">
         <h2>User Registration</h2>
           <label for="email">Email</label>
@@ -53,7 +53,7 @@
           <button type="submit">Register</button>
       </form>
 
-      <!-- login form -->
+      <!-- Login form -->
       <form id="loginForm" class="hide loginForm">
         <h2>Login</h2>
           <label for="email">Email</label>
@@ -83,7 +83,9 @@
       <div id="progressContainer">
         <ul id="progressListId"></ul>
       </div>
+        <!-- Add a new progress form -->
       <form id="addProgressForm" class="addProgressFormClass">
+        <h3>Add a new progress</h3>
         <label for="date">Date</label>
         <input type="date" id="date" required>
         <label for="exercise">Exercise</label>
@@ -92,7 +94,27 @@
         <input type="number" id="exerciseWeight" required placeholder="Weight in kg">
         <label for="reps">Reps</label>
         <input type="number" id="reps" required placeholder="Number of reps">
-        <button type="submit" id="addButton">Add</button>
+          <div id="addProgressButtons">
+            <button type="submit" id="addButton">Add</button>
+            <button type="button" id="cancelAddProgressButton">Cancel</button>
+          </div>
+      </form>
+       <!-- Edit a progress form -->
+      <form id="editProgressForm" class="editProgressFormClass hide">
+        <h3>Edit a progress</h3>
+        <input type="hidden" id="editProgressId">
+        <label for="editDate">Date</label>
+        <input type="date" id="editDate" required>
+        <label for="editExercise">Exercise</label>
+        <input type="text" id="editExercise" required placeholder="type your exercise here">
+        <label for="editExerciseWeight">Weight</label>
+        <input type="text" id="editExerciseWeight" required placeholder="Weight in kg">
+        <label for="editReps">Reps</label>
+        <input type="text" id="editReps" required placeholder="Number of reps">
+          <div id="editProgressButtons">
+            <button type="submit" id="updateProgressButton">Update</button>
+            <button type="button" id="cancelProgressButton">Cancel</button>
+          </div>
       </form>
     </div>
 </div>
