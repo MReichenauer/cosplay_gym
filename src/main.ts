@@ -20,7 +20,8 @@ const loginBtn = document.getElementById("loginButton");
 // User data variables
 let userInfo = null;
 
-// Main app div ,welcomeUser H2, progressList, logout button, addProgressForm, addProgressButton
+// Main app div ,welcomeUser H2, progressList, logout button, addProgressForm, addProgressButton, cancelAddProgressButton
+//searchForm, searchButton, searchfield
 const homeApp = document.getElementById("homeApp");
 const welcomeUser = document.getElementById("welcomeUser");
 const progressList = document.getElementById("progressListId");
@@ -28,6 +29,10 @@ const logoutButton = document.getElementById("logoutButton");
 const addProgressButton = document.getElementById("addProgressButton");
 const addProgressForm = document.getElementById("addProgressForm");
 const cancelAddProgressButton = document.getElementById("cancelAddProgressButton")
+const searchForm = document.querySelector("#filterForm");
+const searchButton = document.getElementById("search");
+const resetSearchButton = document.getElementById("resetSearch");
+const searchInput = document.getElementById("filterExercise") as HTMLInputElement;
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
@@ -206,6 +211,8 @@ const isValidEmail = (email: string): boolean => {
 
     // Fetch progress data after successful login
     fetchProgress(token);
+
+    
 
   } catch (error) {
     console.log("Login failed:", error);
@@ -427,13 +434,16 @@ addProgressForm?.addEventListener("submit", async (e) => {
     // If the POST is successful, hide the form
     toggleElement(addProgressForm!, false);
 
-      // Remove the user's progress list
-      while (progressList!.firstChild) {
-        progressList!.removeChild(progressList!.firstChild);
-      }
+    // Remove the user's progress list
+    while (progressList!.firstChild) {
+      progressList!.removeChild(progressList!.firstChild);
+    }
+    // Reset progress button and text to initial state
+    progressButton.innerText = "Show Progress";
+    progressTitle.innerText = "View Your Progress";
 
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
+    // Clear search field
+    searchInput.value = "";
 
     // Fetch and update the progress list
     fetchProgress(token);
@@ -527,6 +537,9 @@ editProgressForm!.addEventListener("submit", async (e) => {
     progressButton.innerText = "Show Progress";
     progressTitle.innerText = "View Your Progress";
 
+    // Clear search field
+    searchInput.value = "";
+
     // Remove the user's old progress list from DOM
     while (progressList!.firstChild) {
       progressList!.removeChild(progressList!.firstChild);
@@ -547,5 +560,47 @@ cancelProgressButton!.addEventListener("click", () => {
   toggleElement(editProgressForm!, false);
 });
 
-// Call autoLogin initially at start
+// Filter in the list of progress's 
+const filterExercise = (e: any) => {
+  e.preventDefault(); 
+
+  const searchInput = document.getElementById("filterExercise") as HTMLInputElement;
+  const userSearch = searchInput.value.toLowerCase();
+  const progressItems = progressList!.querySelectorAll("li");
+
+  if (!progressItems) {
+      return;
+  }
+
+  progressItems.forEach((progressItem) => {
+      const exerciseName = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML.toLowerCase().trim().split(" <br> ")[1];
+      if (exerciseName.includes(userSearch)) {
+          progressItem.style.display = "flex";
+      } else {
+          progressItem.style.display = "none";
+      }
+  });
+};
+
+// Adding the event to both as a submit and click on the search button
+searchForm?.addEventListener("submit", filterExercise);
+searchButton?.addEventListener("click", filterExercise);
+
+// Reset the search field and show all progress's
+const resetSearch = () => {
+  
+  // Clear search field
+  searchInput.value = "";
+
+  // Show all progress's
+  const progressItems = progressList!.querySelectorAll("li");
+  progressItems.forEach((progressItem) => {
+      progressItem.style.display = "flex";
+  });
+};
+
+// Adding the event to reset the search to the reset button
+resetSearchButton?.addEventListener("click", resetSearch);
+
+// Call autoLogin initially when page load
 window.addEventListener("DOMContentLoaded", autoLogin);

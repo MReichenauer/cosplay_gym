@@ -81,6 +81,17 @@
         <button id="addProgressButton">Add Progress</button>
       </div>
       <div id="progressContainer">
+        <form id="filterForm">
+          <label for="filterExercise">Exercise Search</label><br>
+          <input type="text" 
+            id="filterExercise" 
+            name="filterExercise" 
+            placeholder="Search for a exercise" required /><br>
+              <div id="filterButtons">
+              <button type="button" id="search">Search</button>
+              <button type="button" id="resetSearch">Reset</button>
+              </div>
+        </form>
         <ul id="progressListId"></ul>
       </div>
         <!-- Add a new progress form -->
