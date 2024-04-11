@@ -31,7 +31,8 @@ justify-content: center;
 
 
 #registerButton, #loginButton, #logoutButton, #addButton, 
-#cancelAddProgressButton, #updateProgressButton, #cancelProgressButton {
+#cancelAddProgressButton, #updateProgressButton, #cancelProgressButton,
+#profileButton {
   display: block;
   margin: 20px auto;
 }
@@ -122,4 +123,10 @@ justify-content: center;
 #filterExercise {
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
+}
+
+#profileForm {
+  
+  flex-direction: column;
+  border: 1px solid #0f0a0a;
 }

@@ -1,5 +1,6 @@
 import "./style.css";
 import axios from "axios";
+import { User } from './type';
 
 export const API_BASE_URL = "http://localhost:3000";
 
@@ -33,6 +34,23 @@ const searchForm = document.querySelector("#filterForm");
 const searchButton = document.getElementById("search");
 const resetSearchButton = document.getElementById("resetSearch");
 const searchInput = document.getElementById("filterExercise") as HTMLInputElement;
+
+// Profile button, close profile button, save profile changes button
+const profileButton = document.getElementById("profileButton");
+const closeProfileButton = document.getElementById("closeProfile");
+const saveProfileChangesButton = document.getElementById("saveProfileChanges");
+
+// Profile edit form element
+const profileForm = document.getElementById("profileForm");
+
+const profileEmail = (document.getElementById("profileEmail") as HTMLInputElement);
+const profilePassword = (document.getElementById("profilePassword") as HTMLInputElement);
+const confirmProfilePassword = document.getElementById("confirmProfilePassword") as HTMLInputElement;
+const profileLastName = document.getElementById("profileLastName") as HTMLInputElement;
+const profileFirstName = document.getElementById("profileFirstName") as HTMLInputElement;
+const profileWeight = document.getElementById("profileWeight") as HTMLInputElement;
+const profileHeight = document.getElementById("profileHeight") as HTMLInputElement;
+
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
@@ -308,6 +326,134 @@ const autoLogin = async () => {
   }
 };
 
+// Event to display profile
+profileButton!.addEventListener("click", async () => {
+  try {
+    // Fetch user profile
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // Successful request
+    if (response.status === 200) {
+      const userProfile = response.data;
+
+      // Populate form fields with user profile's information as the placeholder
+      profileEmail.placeholder = userProfile.data.email;
+      profileFirstName.placeholder = userProfile.data.first_name;
+      profileLastName.placeholder = userProfile.data.last_name;
+      profileWeight.placeholder = userProfile.data.weight.toString();
+      profileHeight.placeholder = userProfile.data.height.toString();
+
+      // Show the profile form
+      toggleElement(profileForm!, true)
+    } else {
+      // if GET fails
+      console.log("Failed to get user profile");
+      alert("Failed get user profile. Please try again.");
+    }
+  } catch (error) {
+    console.log("Failed to get user profile:", error);
+    alert("Failed get user profile. Please try again.");
+  }
+});
+
+closeProfileButton!.addEventListener("click", () => {
+ 
+  // Hide profile form
+  toggleElement(profileForm!, false);
+
+  // Reset the form if it's closed
+  profileEmail.value = "";
+  profilePassword.value = "";
+  confirmProfilePassword.value = "";
+  profileFirstName.value = "";
+  profileLastName.value = "";
+  profileWeight.value = "";
+  profileHeight.value = "";
+
+});
+
+// Event to save the profile changes to the database
+saveProfileChangesButton!.addEventListener("click", async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // Get the values from the input fields
+    const newPasswordInput = profilePassword;
+    const confirmPasswordInput = confirmProfilePassword;
+    
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    // Check if the passwords match
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match. Please enter the same password in both fields.");
+      return;
+    }
+
+   // Create an empty object
+    const updatedUser: User = {
+      email: "",
+      password: "",
+      first_name: "",
+      last_name: "",
+      weight: 0,
+      height: 0
+    };
+
+    // Fill in the updatedUser object with values
+    updatedUser.email = profileEmail.value;
+    updatedUser.password = profilePassword.value;
+    updatedUser.first_name = profileFirstName.value;
+    updatedUser.last_name = profileLastName.value;
+    updatedUser.weight = parseInt(profileWeight.value);
+    updatedUser.height = parseInt(profileHeight.value);
+
+    // Remove empty fields from the updated user object so that to make sure only the fields the user type's in are sent in the request
+    for (const key in updatedUser) {
+      if (!updatedUser[key as keyof User]) {
+        delete updatedUser[key as keyof User];
+      }
+    }
+
+    // Send a PATCH request to update the user's profile with the updatedUser object
+    await axios.patch(`${API_BASE_URL}/profile/edit`, updatedUser, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // If the request is successful reset the form and hide it, update the H1 with the new username if its updated, and alert the user
+    alert("Profile updated successfully!");
+
+    // Reset the form
+    profileEmail.value = "";
+    profilePassword.value = ""
+    confirmProfilePassword.value = "";
+    profileFirstName.value = "";
+    profileLastName.value = "";
+    profileWeight.value = "";
+    profileHeight.value = "";
+
+    // Hide profile form
+    toggleElement(profileForm!, false);
+    const response = await axios.get(`${API_BASE_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const userProfile = response.data;
+
+    // Update the welcome page if the user updated first name
+    if (updatedUser.first_name !== userProfile.first_name) {
+      welcomeUser!.innerHTML = `Welcome ${updatedUser.first_name} <br><br> Strive to be the best version of yourself!`;
+    }
+  
+  } catch (error) {
+    console.log("Error updating profile:", error);
+    alert("Failed to update profile. Please try again.");
+  }
+});
+
 // Fetch progress data of the authenticated user
 const fetchProgress = async (token: string | null) => {
   try {
@@ -460,7 +606,8 @@ addProgressForm?.addEventListener("submit", async (e) => {
     alert("Failed to add progress. Please try again.");
   }
 });
-// Close the update progress form
+
+// Close the add progress form
 cancelAddProgressButton!.addEventListener("click", () => {
   toggleElement(addProgressForm!, false);
 
