@@ -74,6 +74,7 @@ toggleElement(loginForm!, true);
 toggleElement(registrationForm!, false);
 toggleElement(homeApp!, false);
 toggleElement(editProgressForm!, false);
+toggleElement(profileForm!, false)
 
 // Register button event
 registerBtn?.addEventListener("click", () => {
@@ -220,12 +221,13 @@ const isValidEmail = (email: string): boolean => {
     console.log("User's first name:", userInfo.data.first_name);
 
     // Update the welcome page so it's adapted for each uniq user
-    welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name} <br><br> Strive to be the best version of yourself!`;
+    welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name}`;
 
     // When user is logged in, hide registerAndLogin and show homeApp
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
     toggleElement(addProgressForm!, false);
+    toggleElement(profileForm!, false)
 
     // Fetch progress data after successful login
     fetchProgress(token);
@@ -296,12 +298,13 @@ const autoLogin = async () => {
     console.log("Auto login successful. User profile:", profileData);
 
     // Update the welcome page
-    welcomeUser!.innerHTML = `Welcome ${profileData.data.first_name} <br><br> Strive to be the best version of yourself!`;
+    welcomeUser!.innerHTML = `Welcome ${profileData.data.first_name}`;
 
     // Show homeApp and hide registerAndLogin
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
     toggleElement(addProgressForm!, false);
+    toggleElement(profileForm!, false)
 
     // Fetch progress data after successful login
     fetchProgress(localStorage.getItem("token"));
@@ -347,7 +350,12 @@ profileButton!.addEventListener("click", async () => {
       profileHeight.placeholder = userProfile.data.height.toString();
 
       // Show the profile form
+      toggleElement(progressContainer!, false);
+      toggleElement(addProgressForm!, false);
       toggleElement(profileForm!, true)
+      
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
     } else {
       // if GET fails
       console.log("Failed to get user profile");
@@ -445,7 +453,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
 
     // Update the welcome page if the user updated first name
     if (updatedUser.first_name !== userProfile.first_name) {
-      welcomeUser!.innerHTML = `Welcome ${updatedUser.first_name} <br><br> Strive to be the best version of yourself!`;
+      welcomeUser!.innerHTML = `Welcome ${updatedUser.first_name}`;
     }
   
   } catch (error) {
@@ -489,8 +497,10 @@ const fetchProgress = async (token: string | null) => {
               <p>Exercise <br> ${exercise}</p>
               <p>Weight <br> ${weight} kg</p>
               <p>Reps <br> ${reps}</p>
+              <div class ="progressActions">
               <span class="editProgress">✏️</span>
               <span class="deleteProgress">🗑️</span>
+              </div>
           `;
 
           // Event to delete a progress
@@ -542,8 +552,11 @@ let isFormVisible = false;
 // Toggle the visibility of the form
 addProgressButton?.addEventListener("click", () => {
   isFormVisible = !isFormVisible;
-  toggleElement(addProgressForm!, isFormVisible);
+  toggleElement(addProgressForm!, true);
   toggleElement(editProgressForm!, false);
+  toggleElement(progressContainer!, false);
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
 });
 
 // Submit even to do a POST of the new progress
@@ -623,27 +636,30 @@ progressList!.addEventListener("click", (e) => {
   const target = e.target as HTMLElement;
   if (target.classList.contains("editProgress")) {
     toggleElement(addProgressForm!, false);
-    const id = target.parentElement!.id.split("-")[1];
-    const progressItem = document.getElementById(`progress-${id}`)!;
+    toggleElement(progressContainer!, false);
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+    const progressItem = target.closest("li")
+    const id = progressItem?.id.split("-")[1];
 
     // Extract the value of the fields and slicing it accordingly from the selected item in progress list
-    const dateElement = progressItem.querySelector("p:nth-of-type(1)")!.textContent!.trim()
+    const dateElement = progressItem!.querySelector("p:nth-of-type(1)")!.textContent!.trim()
     console.log("Not sliced date:",dateElement);
-    const date = dateElement.slice(6);
+    const date = dateElement!.slice(6);
     console.log("Sliced date:", date)
       
-    const exercise = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
-    const weightString = progressItem.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
-    const weight = weightString.slice(0, -3);
-    const reps = progressItem.querySelector("p:nth-of-type(4)")!.textContent!.slice(6);
+    const exercise = progressItem!.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
+    const weightString = progressItem!.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
+    const weight = weightString!.slice(0, -3);
+    const reps = progressItem!.querySelector("p:nth-of-type(4)")!.textContent!.slice(6);
 
     // Adding the initial progress data to the edit fields
-    (document.getElementById("editProgressId") as HTMLInputElement).value = id;
+    (document.getElementById("editProgressId") as HTMLInputElement).value = id!;
     (document.getElementById("editDate") as HTMLInputElement).value = date;
     (document.getElementById("editExercise") as HTMLInputElement).value = exercise;
     (document.getElementById("editExerciseWeight") as HTMLInputElement).value = weight;
     (document.getElementById("editReps") as HTMLInputElement).value = reps;
-
+    console.log("This is the id of the selected progress:", id)
     // Show the edit form
     toggleElement(editProgressForm!, true);
   }

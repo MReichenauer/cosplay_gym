@@ -4,13 +4,20 @@
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Cosplay gym</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+
+    <title>Training tracker</title>
 	</head>
   <div id="app">
     <div id="appRegisterAndLogin">
-      <h1>Cosplay's gym</h1>
-      <button id="registerButton">Register</button>
-      <button id="loginButton">Login</button>
+      <h1 class="mainTitle">Training tracker</h1>
+      <div id="registerLoginButtons">
+        <button id="registerButton">Register</button>
+        <button id="loginButton">Login</button>
+      </div>
         <!-- Registration form -->
       <form id="registrationForm" class="registrationForm hide ">
         <h2>User Registration</h2>
@@ -50,7 +57,7 @@
             name="height" 
             placeholder="Type your height" required />
         
-          <button type="submit">Register</button>
+          <button type="submit" id="registerFormButton">Register account</button>
       </form>
 
       <!-- Login form -->
@@ -68,15 +75,18 @@
             name="password" 
             placeholder="Minimum 6 characters" required />
 
-            <button type="submit">Login</button>
+            <button type="submit" id="loginFormButton">Login</button>
       </form>
     </div>
     <div id="homeApp">
-      <button id="logoutButton">Logout</button>
-      <button id="profileButton">Profile</button>
-      <h1 id="mainTitle">Cosplay's gym</h1>
+      <h1 class="mainTitle">Training tracker</h1>
+      <div id="mainButtons">
+        <button id="logoutButton">Logout</button>
+        <button id="profileButton">Profile</button>
+      </div>
       <div id="startPage">
         <h2 id="welcomeUser"></h2>
+        <h2 id="strive">Strive to be the best version of yourself!</h2>
         <h3 id="progressTitle">View Your Progress</h3>
         <button id="progressButton">Progress</button>
         <button id="addProgressButton">Add Progress</button>
@@ -132,7 +142,7 @@
 
     <form id="profileForm" class="hide">
       <h2>Edit Profile</h2>
-      <button type="button" id="closeProfile">Close</button>
+      
 
       <label for="profileEmail">Email</label>
       <input type="email" id="profileEmail" placeholder="Enter new email">
@@ -154,8 +164,10 @@
       
       <label for="profileHeight">Height in cm</label>
       <input type="number" id="profileHeight" placeholder="Enter new height">
-      
-      <button type="button" id="saveProfileChanges">Save Changes</button>
+      <div id="editProfileButtons">
+        <button type="button" id="saveProfileChanges">Update profile</button>
+        <button type="button" id="closeProfile">Close</button>
+      </div>
     </form>
 </div>
 <script type="module" src="/src/main.ts"></script>

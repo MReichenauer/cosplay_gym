@@ -1,16 +1,41 @@
 * {
+  font-family: quicksand;
+  font-weight: 300;
   font-size: 16px;
   list-style: none;
+  background-color: #f2f5fa17;
 }
 
 h1 {
-  font-size: 26px;
-  margin-bottom: 20px;
+  font-family: "Courgette", cursive;
+  font-size: 38px;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
   font-size: 24px;
+  font-weight: 550;
   margin-top: 0;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 550;
+  margin-top: 0;
+}
+
+#welcomeUser {
+  margin-bottom: 1rem;
+}
+
+#strive {
+  font-family: "Courgette", cursive;
+  font-size: 20px;
+  color: #020202e3;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 #app {
@@ -29,48 +54,161 @@ justify-content: center;
   display: none;
 }
 
-
-#registerButton, #loginButton, #logoutButton, #addButton, 
-#cancelAddProgressButton, #updateProgressButton, #cancelProgressButton,
-#profileButton {
+#registerButton, #registerFormButton, #loginFormButton, #addButton, 
+#updateProgressButton, #profileButton, #progressButton , #search, #saveProfileChanges{
   display: block;
   margin: 20px auto;
+  font-weight: 450;
+  cursor: pointer;
+  outline: 0;
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  display: inline-block;
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s
+  ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-.registrationForm, .loginForm, .addProgressFormClass, .editProgressFormClass{
+#registerButton:hover, #registerFormButton:hover, 
+#loginFormButton:hover, #addButton:hover, 
+#updateProgressButton:hover, #profileButton:hover, #progressButton:hover,
+#search:hover, #saveProfileChanges:hover  {
+  color: #fff;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+#loginButton, #logoutButton, #cancelProgressButton, #cancelAddProgressButton,
+#addProgressButton, #resetSearch, #closeProfile {
+display: block;
+margin: 20px auto;
+font-weight: 550;
+cursor: pointer;
+outline: 0;
+display: inline-block;
+line-height: 1.5;
+text-align: center;
+background-color: transparent;
+border: 1px solid transparent;
+padding: 6px 12px;
+border-radius: .25rem;
+transition: color .15s ease-in-out,background-color .15s ease-in-out,
+border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+color: #0d6efd;
+border-color: #0d6efd;
+}
+
+#loginButton:hover, #cancelProgressButton:hover, #cancelAddProgressButton:hover,
+#logoutButton:hover, #addProgressButton:hover, #resetSearch:hover, #closeProfile:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+#registerFormButton, #loginFormButton{
+  margin-bottom: 0;
+}
+.registrationForm, .loginForm, .addProgressFormClass, .editProgressFormClass, 
+#progressContainer, #profileForm{
   display: flex;
   flex-direction: column;
   width: 300px;
   margin: 0;
   margin-left: auto;
   margin-right: auto;
-  padding: 2rem;
-  border: 1px solid #0f0a0a;
+  padding: 1.5rem;
+  background-color: #f2f5fa;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
   border-radius: 10px;
 }
 
-.registrationForm input, .loginForm input, .addProgressForm input{
+#registrationForm, #loginForm, #addProgressForm, #editProgressForm, #profileForm{
+  padding: 0.5rem;
+  padding-bottom: 1.5rem;
+  padding-top: 1rem;
+}
+
+#addProgressForm button, #editProgressForm button {
+  margin-bottom: 0;
+}
+
+.registrationForm input, .loginForm input, #addProgressForm input,
+#filterExercise, .editProgressFormClass input, #profileForm input {
   margin-bottom: 10px;
-  height: 26px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 500px;
+  width: 80%;
+  color: rgb(36, 35, 42);
+  font-weight: 500;
+  line-height: 20px;
+  min-height: 28px;
+  border-radius: 4px;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  box-shadow: rgb(0 0 0 / 12%) 0px 1px 3px, rgb(0 0 0 / 24%) 0px 1px 2px;
+  background: rgb(251, 251, 251);
+  transition: all 0.1s ease 0s;
 }
 
-.registrationForm label, .loginForm label, .addProgressForm label{
+.registrationForm label, .loginForm label, .addProgressForm label, #addProgressForm label,
+#filterForm label, .editProgressFormClass label, #profileForm label{
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
+  margin-bottom: 5px;
 }
 
-#mainTitle {
-  font-size: 26px;
-  margin-bottom: 20px;
+.registrationForm ::placeholder , .loginForm ::placeholder , .addProgressForm ::placeholder
+#profileForm ::placeholder {
+  font-weight: 400;
+} 
+
+.mainTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  max-width: 400px;
+  width: 90%;
+  margin-top: 0.2rem;
+  margin-bottom: 0.1rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.4rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  border-radius: 10px;
+  color: #0d6efd;
+  background-color: #f2f5fa;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
+}
+
+#mainButtons {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 0; 
 }
 
 #startPage {
-  margin: 20px auto;
-  width: 100%;
+  margin: auto;
+  margin-top: 10px;
+  width: 90%;
+  max-width: 400px;
   padding: 0;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  border: 1px solid #0f0a0a;
+  background-color: #f2f5fa;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
   border-radius: 10px;
 }
 
@@ -80,53 +218,155 @@ justify-content: center;
   justify-content: center; 
   width: 100%;
   padding: 0;
-  padding-bottom: 1rem;
+  height: 100%;
+  margin-top: 1.5rem;
+}
+
+#progressContainer ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+#progressContainer ul::-webkit-scrollbar-track {
+  background: #f8f7f7; 
+}
+
+#progressContainer ul::-webkit-scrollbar-thumb {
+  background: #0d6dfdd5; 
+  border-radius: 10px; 
+}
+
+#progressContainer ul::-webkit-scrollbar-thumb:hover {
+  background: #0d6efd 
+}
+
+#filterForm {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+#filterButtons {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: -1rem;
+  justify-content: space-between;
+  max-width: 500px;
+}
+
+#progressContainer {
+  background-color: #f2f5fa;
+  margin-bottom: 1.5rem;
 }
 
 #progressContainer ul {
   max-height: calc(5 * (4.5rem));
   width: 100%;
-  margin: 20px auto;
+  margin: auto;
+  margin-top: 1rem;
   padding: 0rem;
-  border: 1px solid #0f0a0a;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
   border-radius: 10px;
   overflow-y: scroll;
 }
 
-
 #progressContainer li {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  border-bottom: 1px solid #0f0a0a;
   width: 100%;
   height: 4.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  align-items: center;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 3%), 0 8px 10px 1px 
+  rgb(0 0 0 / 2%), 0 3px 14px 2px rgb(0 0 0 / 5%);
+}
+
+#progressContainer li:nth-child(odd) {
+  background-color: #3e7eeb25;
+}
+
+ #progressContainer li:nth-child(even) {
+  background-color: #6b9dfb17
+  ;
+}
+
+#progressContainer p:nth-child(1) {
+  width: 20%;
+}
+
+#progressContainer p:nth-child(2) {
+  width: 30%;
+}
+
+#progressContainer p:nth-child(3) {
+  width: 20%;
+}
+
+#progressContainer p:nth-child(4) {
+  width: 20%;
+}
+
+#progressContainer p {
+  font-size: 15px;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+.progressActions {
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.2rem;
   
 }
 
-.addProgressFormClass, .editProgressFormClass  { 
+.progressActions span {
+  font-size: 18px;
+  margin-bottom: 0.3rem;
+}
+
+#addProgressForm, #editProgressForm {
+  position: absolute;
+  background-color: #f2f5fa;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -56%);
+}
+
+#profileForm {
+  position: absolute;
+  background-color: #f2f5fa;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  padding-bottom: 1rem;
+}
+
+#saveProfileChanges, #closeProfile {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* .addProgressFormClass, .editProgressFormClass  { 
   width: 90%;
   padding: 1rem;
   padding-top: 1rem;
   padding-bottom: 0.2rem;
   margin-bottom: 2rem;
-}
+} */
 
-#editProgressButtons, #addProgressButtons {
+#editProgressButtons, #addProgressButtons, #registerLoginButtons {
   display: flex;
-  justify-content: space-between;
-  margin-left: 20%;
-  margin-right: 20%;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 0;
 }
 
 #filterExercise {
+  width: 70%;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
 }
 
-#profileForm {
-  
-  flex-direction: column;
-  border: 1px solid #0f0a0a;
-}
+
