@@ -72,6 +72,7 @@ const showAlert = (message: string) => {
 
   // Show the window
   alertUser.style.display = "block";
+  window.focus()
 
  // Close the window after 5 seconds
   setTimeout(() => {
@@ -532,15 +533,37 @@ const fetchProgress = async (token: string | null) => {
           // Event to delete a progress
           const deleteButton = progressItem.querySelector(".deleteProgress") as HTMLElement;
           deleteButton.addEventListener("click", async () => {
-              try {
-                  // Delete the progress fom the database
+            try {
+              // Show confirmation window
+              const confirmationWindow = document.getElementById("confirmationWindow")!;
+              confirmationWindow.style.display = "block";
+              window.focus();
+              
+              // Confirmation and cancel buttons
+              const confirmButton = document.getElementById("confirmButton")!;
+              const cancelConfirmButton = document.getElementById("cancelConfirmButton")!;
+              
+              // If confirmed, delete the selected progress
+              confirmButton.addEventListener("click", async () => {
+                  
+                // Delete the progress from the database
                   await axios.delete(`${API_BASE_URL}/progress/${id}`, {
                       headers: { Authorization: `Bearer ${token}` }
                   });
                   
                   // If DELETE is successful, delete it from the list as well
                   progressItem.remove();
-                  console.log("Progress item deleted successfully.");
+                  console.log("Progress item deleted successfully");
+                  showAlert("Progress deleted successfully")
+                  
+                  // Hide confirmation window
+                  confirmationWindow.style.display = "none"; 
+              });
+              
+              // If canceled hide confirm window
+              cancelConfirmButton.addEventListener("click", () => {
+                  confirmationWindow.style.display = "none";
+              });
               } catch (error) {
                   console.log("Failed to delete progress:", error);
                   showAlert("Failed to delete progress.");

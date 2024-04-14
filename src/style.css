@@ -56,7 +56,7 @@ justify-content: center;
 
 #registerButton, #registerFormButton, #loginFormButton, #addButton, 
 #updateProgressButton, #profileButton, #progressButton , #search, 
-#saveProfileChanges, .closeAlert{
+#saveProfileChanges, .closeAlert, #confirmButton{
   display: block;
   margin: 20px auto;
   font-weight: 450;
@@ -78,14 +78,15 @@ justify-content: center;
 #registerButton:hover, #registerFormButton:hover, 
 #loginFormButton:hover, #addButton:hover, 
 #updateProgressButton:hover, #profileButton:hover, #progressButton:hover,
-#search:hover, #saveProfileChanges:hover, .closeAlert:hover  {
+#search:hover, #saveProfileChanges:hover, .closeAlert:hover,
+#confirmButton:hover  {
   color: #fff;
   background-color: #0b5ed7;
   border-color: #0a58ca;
 }
 
 #loginButton, #logoutButton, #cancelProgressButton, #cancelAddProgressButton,
-#addProgressButton, #resetSearch, #closeProfile {
+#addProgressButton, #resetSearch, #closeProfile, #cancelConfirmButton {
 display: block;
 margin: 20px auto;
 font-weight: 550;
@@ -105,7 +106,8 @@ border-color: #0d6efd;
 }
 
 #loginButton:hover, #cancelProgressButton:hover, #cancelAddProgressButton:hover,
-#logoutButton:hover, #addProgressButton:hover, #resetSearch:hover, #closeProfile:hover {
+#logoutButton:hover, #addProgressButton:hover, #resetSearch:hover, #closeProfile:hover,
+#cancelConfirmButton:hover {
   color: #fff;
   background-color: #0d6efd;
   border-color: #0d6efd;
@@ -293,6 +295,7 @@ border-color: #0d6efd;
 
 #progressContainer p:nth-child(1) {
   width: 20%;
+  padding-left: 0.2rem;
 }
 
 #progressContainer p:nth-child(2) {
@@ -348,14 +351,6 @@ border-color: #0d6efd;
   margin-bottom: 0;
 }
 
-/* .addProgressFormClass, .editProgressFormClass  { 
-  width: 90%;
-  padding: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 0.2rem;
-  margin-bottom: 2rem;
-} */
-
 #editProgressButtons, #addProgressButtons, #registerLoginButtons {
   display: flex;
   width: 100%;
@@ -372,7 +367,7 @@ border-color: #0d6efd;
 
 .alertClass {
   display: none;
-  position: absolute;
+  position: fixed;
   width: 95%;
   max-width: 400px;
   background-color: #cddcff;
@@ -403,4 +398,38 @@ border-color: #0d6efd;
   text-align: center;
   border-radius: 10px;
   padding-top: 0.8rem;
+}
+
+.confirmationWindowClass {
+  display: none;
+  position: fixed;
+  width: 95%;
+  max-width: 400px;
+  background-color: #cddcff;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
+  border-radius: 10px;
+  z-index: 2;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-bottom: 1rem;
+}
+
+.confirmationContent {
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  padding-top: 0.8rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.confirmationButtons {
+  display: flex;
+  justify-content: center;
+}
+
+#confirmButton {
+  margin-right: 0;
 }
