@@ -43,6 +43,7 @@ const saveProfileChangesButton = document.getElementById("saveProfileChanges");
 // Profile edit form element
 const profileForm = document.getElementById("profileForm");
 
+// Profile input elements
 const profileEmail = (document.getElementById("profileEmail") as HTMLInputElement);
 const profilePassword = (document.getElementById("profilePassword") as HTMLInputElement);
 const confirmProfilePassword = document.getElementById("confirmProfilePassword") as HTMLInputElement;
@@ -61,6 +62,31 @@ const progressContainer = document.getElementById("progressContainer")!;
 const editProgressForm = document.getElementById("editProgressForm")
 const cancelProgressButton = document.getElementById("cancelProgressButton")
 
+// Communicate with user via this alert
+const showAlert = (message: string) => {
+  const alertUser = document.getElementById("alertUser")!;
+  const alertContent = document.getElementById("alertContent")!;
+
+  // Display the message in the window
+  alertContent.innerHTML = message;
+
+  // Show the window
+  alertUser.style.display = "block";
+
+ // Close the window after 5 seconds
+  setTimeout(() => {
+      alertUser.style.display = "none";
+    }, 5000);
+};
+
+// Close the alert window if the button is clicked
+document.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+  if (target.classList.contains("closeAlert")) {
+    const alertUser = document.getElementById("alertUser")!;
+    alertUser.style.display = "none";
+  }
+});
 
 // Toggle the visibility of a element between flex and none
 const toggleElement = (element: HTMLElement, isVisible: boolean) => {
@@ -114,25 +140,25 @@ const isValidEmail = (email: string): boolean => {
 
     // Validate email
     if (!isValidEmail(email)) {
-    alert("Please enter a valid email address.");
+      showAlert("Please enter a valid email address.");
     return;
     }
 
     // Validate password
     if (passwordInput.length < 6) {
-      alert("Password must be at least 6 characters long.");
+      showAlert("Password must be at least 6 characters long.");
       return;
     }
 
     // Validate first name
     if (first_nameInput.length < 3) {
-      alert("First name must be at least 3 characters long.");
+      showAlert("First name must be at least 3 characters long.");
       return;
     }
 
     // Validate last name
     if (last_nameInput.length < 3) {
-      alert("Last name must be at least 3 characters long.");
+      showAlert("Last name must be at least 3 characters long.");
       return;
     }
     
@@ -151,25 +177,25 @@ const isValidEmail = (email: string): boolean => {
       const response = await axios.post(`${API_BASE_URL}/register`, registrationData);
   
       if (response.status === 201) {
-        alert("Your registration was successful!");
+        showAlert("Your registration was successful!");
         toggleElement(loginForm!, true);
         toggleElement(registrationForm!, false);
       } else {
-        alert("Failed to register account. Please check your inputs and try again.");
+        showAlert("Failed to register account. Please check your inputs and try again.");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const response = error.response;
         if (response?.status === 400) {
           const errorMsg = response.data?.data?.[0]?.msg || "Failed to register user. Please try again.";
-          alert(errorMsg);
+          showAlert(errorMsg);
         } else {
           console.log("Network error:", error);
-          alert("Failed to connect to the server. Please check your internet connection and try again.");
+          showAlert("Failed to connect to the server. Please check your internet connection and try again.");
         }
       } else {
         console.log("Error registering user:", error);
-        alert("An unexpected error occurred. Please try again later.");
+        showAlert("An unexpected error occurred. Please try again later.");
       }
     }
   });
@@ -184,13 +210,13 @@ const isValidEmail = (email: string): boolean => {
 
   // Validate email
   if (!isValidEmail(email)) {
-  alert("Please enter a valid email address.");
+    showAlert("Please enter a valid email address.");
   return;
   }
 
   // Validate password
   if (password.length < 6) {
-    alert("Password must be at least 6 characters long.");
+    showAlert("Password must be at least 6 characters long.");
     return;
   }
 
@@ -236,7 +262,7 @@ const isValidEmail = (email: string): boolean => {
 
   } catch (error) {
     console.log("Login failed:", error);
-    alert("Failed to login. Please check your email and password and try again.")
+    showAlert("Failed to login. Please check your email and password and try again.")
   }
 });
 
@@ -359,11 +385,11 @@ profileButton!.addEventListener("click", async () => {
     } else {
       // if GET fails
       console.log("Failed to get user profile");
-      alert("Failed get user profile. Please try again.");
+      showAlert("Failed get user profile. Please try again.");
     }
   } catch (error) {
     console.log("Failed to get user profile:", error);
-    alert("Failed get user profile. Please try again.");
+    showAlert("Failed get user profile. Please try again.");
   }
 });
 
@@ -397,7 +423,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
 
     // Check if the passwords match
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match. Please enter the same password in both fields.");
+      showAlert("Passwords do not match. Please enter the same password in both fields.");
       return;
     }
 
@@ -432,7 +458,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
     });
 
     // If the request is successful reset the form and hide it, update the H1 with the new username if its updated, and alert the user
-    alert("Profile updated successfully!");
+    showAlert("Profile updated successfully!");
 
     // Reset the form
     profileEmail.value = "";
@@ -458,7 +484,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
   
   } catch (error) {
     console.log("Error updating profile:", error);
-    alert("Failed to update profile. Please try again.");
+    showAlert("Failed to update profile. Please try again.");
   }
 });
 
@@ -517,7 +543,7 @@ const fetchProgress = async (token: string | null) => {
                   console.log("Progress item deleted successfully.");
               } catch (error) {
                   console.log("Failed to delete progress:", error);
-                  alert("Failed to delete progress.");
+                  showAlert("Failed to delete progress.");
               }
           });
 
@@ -566,7 +592,7 @@ addProgressForm?.addEventListener("submit", async (e) => {
   const token = localStorage.getItem("token");
   if (token) {
     localStorage.getItem(token);
-  } else alert("something wrong")
+  } else showAlert("You need to logout and in to do this.")
  
   // Get the values from the form fields
   const date = (document.getElementById("date") as HTMLInputElement).value;
@@ -613,10 +639,10 @@ addProgressForm?.addEventListener("submit", async (e) => {
     (document.getElementById("exerciseWeight") as HTMLInputElement).value = "";
     (document.getElementById("reps") as HTMLInputElement).value = "";
 
-    alert("Progress added successfully!");
+    showAlert("Progress added successfully!");
   } catch (error) {
     console.log("Error adding progress:", error);
-    alert("Failed to add progress. Please try again.");
+    showAlert("Failed to add progress. Please try again.");
   }
 });
 
@@ -711,10 +737,10 @@ editProgressForm!.addEventListener("submit", async (e) => {
     // Update the progress list and send it to DOM
     fetchProgress(token);
 
-    alert("Progress updated successfully!");
+    showAlert("Progress updated successfully!");
   } catch (error) {
     console.log("Error updating progress:", error);
-    alert("Failed to update progress. Please try again.");
+    showAlert("Failed to update progress. Please try again.");
   }
 });
 

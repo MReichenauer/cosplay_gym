@@ -55,7 +55,8 @@ justify-content: center;
 }
 
 #registerButton, #registerFormButton, #loginFormButton, #addButton, 
-#updateProgressButton, #profileButton, #progressButton , #search, #saveProfileChanges{
+#updateProgressButton, #profileButton, #progressButton , #search, 
+#saveProfileChanges, .closeAlert{
   display: block;
   margin: 20px auto;
   font-weight: 450;
@@ -77,7 +78,7 @@ justify-content: center;
 #registerButton:hover, #registerFormButton:hover, 
 #loginFormButton:hover, #addButton:hover, 
 #updateProgressButton:hover, #profileButton:hover, #progressButton:hover,
-#search:hover, #saveProfileChanges:hover  {
+#search:hover, #saveProfileChanges:hover, .closeAlert:hover  {
   color: #fff;
   background-color: #0b5ed7;
   border-color: #0a58ca;
@@ -369,4 +370,37 @@ border-color: #0d6efd;
   margin-bottom: 0.2rem;
 }
 
+.alertClass {
+  display: none;
+  position: absolute;
+  width: 95%;
+  max-width: 400px;
+  background-color: #cddcff;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
+  border-radius: 10px;
+  z-index: 2;
+  top: 29%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  padding-bottom: 1rem;
+}
 
+.closeAlert {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alertContentClass {
+  background-color: #cddcff;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border-radius: 10px;
+  padding-top: 0.8rem;
+}
