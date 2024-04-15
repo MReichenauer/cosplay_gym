@@ -473,3 +473,37 @@ border-color: #0d6efd;
   background-color: transparent;
 }
 
+/* Breakpoints */
+
+/* Bigger mobiles */
+@media only screen and (min-width: 350px) {
+  .mainTitle {
+    max-width: 315px;
+  }
+
+  #mainButtons {
+    max-width: 400px; 
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #progressContainer {
+    max-width: 500px;
+  }
+
+}
+
+/* Tablet */
+@media only screen and (min-width: 600px) {
+
+}
+
+/* Landscape tablet */
+@media only screen and (min-width: 992px) {
+
+}
+
+/* Desktop */
+@media only screen and (min-width: 1200px) {
+
+}
