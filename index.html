@@ -14,12 +14,12 @@
   <div id="app">
     <div id="appRegisterAndLogin">
       <h1 class="mainTitle">Training tracker</h1>
-      <div id="registerLoginButtons">
-        <button id="registerButton">Register</button>
-        <button id="loginButton">Login</button>
+      <div id="registerLoginButtons" class="buttonsDivClass">
+        <button id="registerButton" class="mainButtonClass">Register</button>
+        <button id="loginButton" class="secondaryButtonClass">Login</button>
       </div>
         <!-- Registration form -->
-      <form id="registrationForm" class="registrationForm hide ">
+      <form id="registrationForm" class="registrationForm mainFormClass hide ">
         <h2>User Registration</h2>
           <label for="email">Email</label>
           <input type="email"
@@ -57,11 +57,11 @@
             name="height" 
             placeholder="Type your height" required />
         
-          <button type="submit" id="registerFormButton">Register account</button>
+          <button type="submit" id="registerFormButton" class="mainButtonClass">Register account</button>
       </form>
 
       <!-- Login form -->
-      <form id="loginForm" class="hide loginForm">
+      <form id="loginForm" class="hide loginForm mainFormClass">
         <h2>Login</h2>
           <label for="email">Email</label>
           <input type="email"
@@ -75,21 +75,21 @@
             name="password" 
             placeholder="Minimum 6 characters" required />
 
-            <button type="submit" id="loginFormButton">Login</button>
+            <button type="submit" id="loginFormButton" class="mainButtonClass">Login</button>
       </form>
     </div>
     <div id="homeApp">
       <h1 class="mainTitle">Training tracker</h1>
       <div id="mainButtons">
-        <button id="logoutButton">Logout</button>
-        <button id="profileButton">Profile</button>
+        <button id="logoutButton" class="secondaryButtonClass">Logout</button>
+        <button id="profileButton" class="mainButtonClass">Profile</button>
       </div>
       <div id="startPage">
         <h2 id="welcomeUser"></h2>
         <h2 id="strive">Strive to be the best version of yourself!</h2>
         <h3 id="progressTitle">View Your Progress</h3>
-        <button id="progressButton">Progress</button>
-        <button id="addProgressButton">Add Progress</button>
+        <button id="progressButton" class="mainButtonClass">Progress</button>
+        <button id="addProgressButton" class="secondaryButtonClass">Add Progress</button>
       </div>
       <div id="progressContainer">
         <form id="filterForm">
@@ -99,14 +99,14 @@
             name="filterExercise" 
             placeholder="Search for a exercise" required /><br>
               <div id="filterButtons">
-              <button type="button" id="search">Search</button>
-              <button type="button" id="resetSearch">Reset</button>
+              <button type="button" id="search" class="mainButtonClass">Search</button>
+              <button type="button" id="resetSearch" class="secondaryButtonClass">Reset</button>
               </div>
         </form>
         <ul id="progressListId"></ul>
       </div>
         <!-- Add a new progress form -->
-      <form id="addProgressForm" class="addProgressFormClass">
+      <form id="addProgressForm" class="addProgressFormClass mainFormClass">
         <h3>Add a new progress</h3>
         <label for="date">Date</label>
         <input type="date" id="date" required>
@@ -116,13 +116,13 @@
         <input type="number" id="exerciseWeight" required placeholder="Weight in kg">
         <label for="reps">Reps</label>
         <input type="number" id="reps" required placeholder="Number of reps">
-          <div id="addProgressButtons">
-            <button type="submit" id="addButton">Add</button>
-            <button type="button" id="cancelAddProgressButton">Cancel</button>
+          <div id="addProgressButtons" class="buttonsDivClass">
+            <button type="submit" id="addButton" class="mainButtonClass">Add</button>
+            <button type="button" id="cancelAddProgressButton" class="secondaryButtonClass">Cancel</button>
           </div>
       </form>
        <!-- Edit a progress form -->
-      <form id="editProgressForm" class="editProgressFormClass hide">
+      <form id="editProgressForm" class="editProgressFormClass mainFormClass hide">
         <h3>Edit a progress</h3>
         <input type="hidden" id="editProgressId">
         <label for="editDate">Date</label>
@@ -133,14 +133,14 @@
         <input type="text" id="editExerciseWeight" required placeholder="Weight in kg">
         <label for="editReps">Reps</label>
         <input type="text" id="editReps" required placeholder="Number of reps">
-          <div id="editProgressButtons">
-            <button type="submit" id="updateProgressButton">Update</button>
-            <button type="button" id="cancelProgressButton">Cancel</button>
+          <div id="editProgressButtons" class="buttonsDivClass">
+            <button type="submit" id="updateProgressButton" class="mainButtonClass">Update</button>
+            <button type="button" id="cancelProgressButton" class="secondaryButtonClass">Cancel</button>
           </div>
       </form>
     </div>
 
-    <form id="profileForm" class="hide">
+    <form id="profileForm" class="hide mainFormClass">
       <h2>Edit Profile</h2>
       
 
@@ -165,22 +165,22 @@
       <label for="profileHeight">Height in cm</label>
       <input type="number" id="profileHeight" placeholder="Enter new height">
       <div id="editProfileButtons">
-        <button type="button" id="saveProfileChanges">Update profile</button>
-        <button type="button" id="closeProfile">Close</button>
+        <button type="button" id="saveProfileChanges" class="mainButtonClass">Update profile</button>
+        <button type="button" id="closeProfile" class="secondaryButtonClass">Close</button>
       </div>
     </form>
 </div>
  <!-- Alert window -->
 <div id="alertUser" class="alertClass">
   <div id="alertContent" class="alertContentClass"></div>
-  <button type="button" class="closeAlert">Close</button>
+  <button type="button" class="closeAlert mainButtonClass">Close</button>
 </div>
 <!-- Confirmation window -->
 <div id="confirmationWindow" class="confirmationWindowClass">
   <div class="confirmationContent">Are you sure you want to delete this progress?</div>
   <div class="confirmationButtons">
-    <button id="confirmButton" class="confirmationButton">Yes</button>
-    <button id="cancelConfirmButton" class="confirmationButton">No</button>
+    <button id="confirmButton" class="confirmationButton mainButtonClass">Yes</button>
+    <button id="cancelConfirmButton" class="confirmationButton secondaryButtonClass">No</button>
   </div>
 </div>
 <script type="module" src="/src/main.ts"></script>

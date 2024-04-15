@@ -53,10 +53,11 @@ justify-content: center;
 .hide {
   display: none;
 }
-
+/* mainButtonClass
 #registerButton, #registerFormButton, #loginFormButton, #addButton, 
 #updateProgressButton, #profileButton, #progressButton , #search, 
-#saveProfileChanges, .closeAlert, #confirmButton{
+#saveProfileChanges, .closeAlert, #confirmButton */
+.mainButtonClass{
   display: block;
   margin: 20px auto;
   font-weight: 450;
@@ -75,18 +76,22 @@ justify-content: center;
   ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
+/* mainButtonclass(hover)
 #registerButton:hover, #registerFormButton:hover, 
 #loginFormButton:hover, #addButton:hover, 
 #updateProgressButton:hover, #profileButton:hover, #progressButton:hover,
 #search:hover, #saveProfileChanges:hover, .closeAlert:hover,
-#confirmButton:hover  {
+#confirmButton:hover   */
+.mainButtonClass:hover{
   color: #fff;
   background-color: #0b5ed7;
   border-color: #0a58ca;
 }
 
+/* secondaryButtonClass
 #loginButton, #logoutButton, #cancelProgressButton, #cancelAddProgressButton,
-#addProgressButton, #resetSearch, #closeProfile, #cancelConfirmButton {
+#addProgressButton, #resetSearch, #closeProfile, #cancelConfirmButton  */
+.secondaryButtonClass{
 display: block;
 margin: 20px auto;
 font-weight: 550;
@@ -105,9 +110,11 @@ color: #0d6efd;
 border-color: #0d6efd;
 }
 
+/* secondaryButtonClass(hover)
 #loginButton:hover, #cancelProgressButton:hover, #cancelAddProgressButton:hover,
 #logoutButton:hover, #addProgressButton:hover, #resetSearch:hover, #closeProfile:hover,
-#cancelConfirmButton:hover {
+#cancelConfirmButton:hover  */
+.secondaryButtonClass:hover{
   color: #fff;
   background-color: #0d6efd;
   border-color: #0d6efd;
@@ -116,10 +123,11 @@ border-color: #0d6efd;
 #registerFormButton, #loginFormButton{
   margin-bottom: 0;
 }
+/* mainFormClass
 .registrationForm, .loginForm, .addProgressFormClass, .editProgressFormClass, 
-#progressContainer, #profileForm{
-  display: flex;
-  flex-direction: column;
+#progressContainer, #profileForm */
+
+#progressContainer{
   width: 300px;
   margin: 0;
   margin-left: auto;
@@ -131,18 +139,27 @@ border-color: #0d6efd;
   border-radius: 10px;
 }
 
-#registrationForm, #loginForm, #addProgressForm, #editProgressForm, #profileForm{
+.mainFormClass{
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: 0;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0.5rem;
   padding-bottom: 1.5rem;
   padding-top: 1rem;
+  background-color: #f2f5fa;
+  box-shadow: 0 5px 5px -3px rgb(0 0 0 / 16%), 0 8px 10px 1px 
+  rgb(0 0 0 / 11%), 0 3px 14px 2px rgb(0 0 0 / 10%);
+  border-radius: 10px;
 }
 
 #addProgressForm button, #editProgressForm button {
   margin-bottom: 0;
 }
 
-.registrationForm input, .loginForm input, #addProgressForm input,
-#filterExercise, .editProgressFormClass input, #profileForm input {
+.mainFormClass input, #progressContainer input {
   margin-bottom: 10px;
   margin-left: auto;
   margin-right: auto;
@@ -160,15 +177,13 @@ border-color: #0d6efd;
   transition: all 0.1s ease 0s;
 }
 
-.registrationForm label, .loginForm label, .addProgressForm label, #addProgressForm label,
-#filterForm label, .editProgressFormClass label, #profileForm label{
+.mainFormClass label{
   font-size: 18px;
   font-weight: 500;
   margin-bottom: 5px;
 }
 
-.registrationForm ::placeholder , .loginForm ::placeholder , .addProgressForm ::placeholder
-#profileForm ::placeholder {
+.mainFormClass ::placeholder {
   font-weight: 400;
 } 
 
@@ -351,7 +366,9 @@ border-color: #0d6efd;
   margin-bottom: 0;
 }
 
-#editProgressButtons, #addProgressButtons, #registerLoginButtons {
+/* buttonsDivClass
+#editProgressButtons, #addProgressButtons, #registerLoginButtons  */
+.buttonsDivClass{
   display: flex;
   width: 100%;
   flex-direction: row;
