@@ -128,10 +128,18 @@ const isValidEmail = (email: string): boolean => {
     // Get registration input field values
     const emailInput = (document.getElementById("email") as HTMLInputElement).value;
     const passwordInput = (document.getElementById("password") as HTMLInputElement).value;
+    const confirmPasswordInput = (document.getElementById("confirmPassword") as HTMLInputElement).value;
     const first_nameInput = (document.getElementById("first_name") as HTMLInputElement).value;
     const last_nameInput = (document.getElementById("last_name") as HTMLInputElement).value;
     const weight = parseFloat((document.getElementById("weight") as HTMLInputElement).value);
     const height = parseFloat((document.getElementById("height") as HTMLInputElement).value);
+
+    
+    // Check if the passwords match
+    if (passwordInput !== confirmPasswordInput) {
+      showAlert("Passwords do not match. Please enter the same password in both fields.");
+      return;
+    }
 
     // Get trim them
     const email = emailInput.trim();
