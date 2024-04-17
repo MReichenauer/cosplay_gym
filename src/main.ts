@@ -262,7 +262,11 @@ const isValidEmail = (email: string): boolean => {
     toggleElement(homeApp!, true);
     toggleElement(registerAndLogin!, false);
     toggleElement(addProgressForm!, false);
-    toggleElement(profileForm!, false)
+    toggleElement(profileForm!, false);
+
+    // Clear the login fields after a successful login
+    (document.getElementById("loginEmail") as HTMLInputElement).value = "";
+    (document.getElementById("loginPassword") as HTMLInputElement).value = "";
 
     // Fetch progress data after successful login
     fetchProgress(token);
