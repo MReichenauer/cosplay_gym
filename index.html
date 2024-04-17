@@ -11,6 +11,8 @@
 
     <title>Training tracker</title>
 	</head>
+  <div id="page-container">
+    <div id="content-wrap">
   <div id="app">
     <div id="appRegisterAndLogin">
       <h1 class="mainTitle">Training tracker</h1>
@@ -98,7 +100,7 @@
           <input type="text" 
             id="filterExercise" 
             name="filterExercise" 
-            placeholder="Search for a exercise" required /><br>
+            placeholder="Search for a exercise" required />
               <div id="filterButtons">
               <button type="button" id="search" class="mainButtonClass">Search</button>
               <button type="button" id="resetSearch" class="secondaryButtonClass">Reset</button>
@@ -108,7 +110,7 @@
       </div>
         <!-- Add a new progress form -->
       <form id="addProgressForm" class="addProgressFormClass mainFormClass">
-        <h3>Add a new progress</h3>
+        <h2>Add a new progress</h2>
         <label for="date">Date</label>
         <input type="date" id="date" required>
         <label for="exercise">Exercise</label>
@@ -124,7 +126,7 @@
       </form>
        <!-- Edit a progress form -->
       <form id="editProgressForm" class="editProgressFormClass mainFormClass hide">
-        <h3>Edit a progress</h3>
+        <h2>Edit a progress</h2>
         <input type="hidden" id="editProgressId">
         <label for="editDate">Date</label>
         <input type="date" id="editDate" required>
@@ -170,9 +172,6 @@
         <button type="button" id="closeProfile" class="secondaryButtonClass">Close</button>
       </div>
     </form>
-    <footer class="footer">
-      <p>Made by Max Reichenauer  2024</p>
-    </footer>
 </div>
  <!-- Alert window -->
 <div id="alertUser" class="alertClass">
@@ -186,6 +185,11 @@
     <button id="confirmButton" class="confirmationButton mainButtonClass">Yes</button>
     <button id="cancelConfirmButton" class="confirmationButton secondaryButtonClass">No</button>
   </div>
+</div>
+</div>
+<footer class="footer">
+  <p>Made by Max Reichenauer  2024</p>
+</footer>
 </div>
 <script type="module" src="/src/main.ts"></script>
 </body>

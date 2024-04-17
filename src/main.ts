@@ -75,9 +75,9 @@ const showAlert = (message: string) => {
   window.focus()
 
  // Close the window after 5 seconds
-  setTimeout(() => {
-      alertUser.style.display = "none";
-    }, 5000);
+  // setTimeout(() => {
+  //     alertUser.style.display = "none";
+  //   }, 5000);
 };
 
 // Close the alert window if the button is clicked
@@ -428,7 +428,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
       return;
     }
 
-   // Create an empty object
+    // Create an empty object
     const updatedUser: User = {
       email: "",
       password: "",
@@ -453,17 +453,24 @@ saveProfileChangesButton!.addEventListener("click", async () => {
       }
     }
 
+    // Fetch the original user profile information
+    const profileResponse = await axios.get(`${API_BASE_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const originalProfile = profileResponse.data;
+
     // Send a PATCH request to update the user's profile with the updatedUser object
     await axios.patch(`${API_BASE_URL}/profile/edit`, updatedUser, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // If the request is successful reset the form and hide it, update the H1 with the new username if its updated, and alert the user
+    // If the request is successful reset the form and hide it, update the H1 with the new username if it's updated, and alert the user
     showAlert("Profile updated successfully!");
 
     // Reset the form
     profileEmail.value = "";
-    profilePassword.value = ""
+    profilePassword.value = "";
     confirmProfilePassword.value = "";
     profileFirstName.value = "";
     profileLastName.value = "";
@@ -472,21 +479,49 @@ saveProfileChangesButton!.addEventListener("click", async () => {
 
     // Hide profile form
     toggleElement(profileForm!, false);
-    const response = await axios.get(`${API_BASE_URL}/profile`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
 
-    const userProfile = response.data;
+    // If the user don't update the email, updatedUser.email will be undefined
+    if (updatedUser.email !== undefined) {
+      console.log("updated", updatedUser.email, "original",originalProfile.data.email)
+      
+      // If email is updated, show the alert and force user to log in again with new email
+      showAlert("You need to log in again with your new email.");
+      
+      // Remove token from local storage
+      localStorage.removeItem("token");
+      
+      // Show initial start
+      toggleElement(homeApp!, false);
+      toggleElement(registerAndLogin!, true);
+      
+      // Set flex direction on registerAndLogin div
+      registerAndLogin!.style.flexDirection = "column";
+
+      // Reset progress window to initial state
+      progressButton.innerText = "Show Progress";
+      progressTitle.innerText = "View Your Progress";
+
+      // Remove the user's progress list
+      while (progressList!.firstChild) {
+        progressList!.removeChild(progressList!.firstChild);
+      }
+    }
 
     // Update the welcome page if the user updated first name
-    if (updatedUser.first_name !== userProfile.first_name) {
+    if (updatedUser.first_name !== originalProfile.data.first_name) {
       welcomeUser!.innerHTML = `Welcome ${updatedUser.first_name}`;
     }
   
-  } catch (error) {
-    console.log("Error updating profile:", error);
-    showAlert("Failed to update profile. Please try again.");
-  }
+  } catch (error: any) {
+      console.log("Error updating profile:", error);
+      // If the response contains error data, extract the msg and display in an alert
+      if (error.response.data.data.length > 0) {
+        const errorMessage = error.response.data.data[0].msg;
+        showAlert(errorMessage);
+      } else {
+        showAlert("Failed to update profile. Please try again.");
+      }
+    }
 });
 
 // Fetch progress data of the authenticated user
