@@ -286,6 +286,7 @@ logoutButton?.addEventListener("click", () => {
   // Remove token from local storage
   localStorage.removeItem("token");
   token = null;
+  console.log(token);
 
   // Show initial start
   toggleElement(homeApp!, false);
@@ -824,7 +825,7 @@ const filterExercise = (e: any) => {
           progressItem.style.display = "none";
       }
   });
-  
+
   // if not a single exercise matched the search, reply with showAlert
   if (!found) {
     showAlert("We couldn't find any matching exercises. Please try a different search.");
