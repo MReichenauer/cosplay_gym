@@ -153,12 +153,12 @@ const isValidName = (name: string): boolean => {
     }
 
     // Validate first name
-    if (!isValidName(profileFirstName.value)) {
+    if (!isValidName(first_name)) {
     return;
     }  
 
     // Validate last name
-    if (!isValidName(profileLastName.value)) {
+    if (!isValidName(last_name)) {
       return;
     }
 
@@ -529,6 +529,120 @@ profileForm!.addEventListener("submit", async (e) => {
       }
     }
 });
+
+// Mark so that we can make sure we don't send multiply requests
+let deleteInProgress = false; 
+
+const deleteProfileButton = document.getElementById("deleteProfileButton");
+
+// Event to delete the user's profile
+deleteProfileButton!.addEventListener("click", async () => {
+
+  // Check if delete is already in progress
+  if (deleteInProgress) {
+    // Prevent multiple delete attempts
+    return; 
+  }
+  // Mark to indicate delete is starting
+  deleteInProgress = true; 
+
+  try {
+      // Show confirmation window
+      const confirmationProfileDeleteWindow = document.getElementById("confirmationProfileDeleteWindow")!;
+      confirmationProfileDeleteWindow.style.display = "block";
+      window.focus();
+
+      // Confirmation and cancel buttons
+      const confirmProfileButton = document.getElementById("confirmProfileButton")!;
+      const cancelConfirmProfileButton = document.getElementById("cancelConfirmProfileButton")!;
+
+      // If confirmed, delete the profile and all of it's progress's
+      confirmProfileButton.addEventListener("click", async () => {
+          try {
+              // Hide confirmation window
+              confirmationProfileDeleteWindow.style.display = "none";
+
+              // Make sure we have the newest token
+              let token = localStorage.getItem("token");
+
+              // Delete all of the user's progress's
+              await deleteAllProgress(token);
+
+              // Once all progress is deleted, move on and delete the profile
+              await axios.delete(`${API_BASE_URL}/profile`, {
+                  headers: { Authorization: `Bearer ${token}` }
+              });
+
+              // If DELETE is successful, remove the token and show initial start
+              localStorage.removeItem("token");
+              token = null;
+
+              // Hide profile form and show initial start
+              toggleElement(profileForm!, false);
+              toggleElement(homeApp!, false);
+              toggleElement(registerAndLogin!, true);
+
+              // Set flex direction on registerAndLogin div
+              registerAndLogin!.style.flexDirection = "column";
+              // Alert the user the delete was a success
+              showAlert("Your profile was deleted successfully!");
+
+          } catch (error) {
+              showAlert("Failed to delete profile, reload the page then try again.");
+          } finally {
+            // Reset the mark if delete was a success or an error occurred
+              deleteInProgress = false; 
+          }
+      });
+
+      // If canceled, hide the confirmation window
+      cancelConfirmProfileButton.addEventListener("click", () => {
+        confirmationProfileDeleteWindow.style.display = "none";
+        deleteInProgress = false; // Reset deletion flag if cancellation occurs
+      });
+
+  } catch (error) {
+      showAlert("Failed to delete profile, reload the page then try again.");
+      // Reset the mark if delete if an error occurs
+      deleteInProgress = false;
+  }
+});
+
+// Delete all of the user's progress's
+const deleteAllProgress = async (token: string | null): Promise<void> => {
+  try {
+      const response = await axios.get(`${API_BASE_URL}/progress`, {
+          headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Get all progress data
+      const progressData: any[] = response.data.data;
+
+      // Extract all of the progress's IDs
+      const progressIds: string[] = progressData.map((progress: any) => progress.id);
+
+      // Use a Set so we can check if the current progress id has been deleted
+      const deletedProgressIds = new Set();
+
+      // Delete all progress items concurrently
+      await Promise.all(progressIds.map(async (progressId: string) => {
+
+          // Check if current the progressId has already been deleted
+          if (!deletedProgressIds.has(progressId)) {
+
+              // Mark the current progressId as deleted
+              deletedProgressIds.add(progressId);
+              
+              // Delete progress item
+              await axios.delete(`${API_BASE_URL}/progress/${progressId}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+              });
+          }
+      }));
+  } catch (error) {
+      throw new Error("Failed to delete progress");
+  }
+};
 
 // Fetch progress data of the authenticated user
 const fetchProgress = async (token: string | null) => {

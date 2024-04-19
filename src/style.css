@@ -47,8 +47,12 @@ h3 {
   padding-right: 1rem;
 }
 
+#confirmationProfileDeleteWindow {
+  display: none;
+}
+
 #app {
-  height: 100%;
+  /* height: 100vh; */
   width: 100%;
   text-align: center;
 }
@@ -111,6 +115,31 @@ border-color: #0d6efd;
   color: #fff;
   background-color: #0d6efd;
   border-color: #0d6efd;
+}
+
+.deleteButtonClass{
+  display: block;
+  margin: 25px auto;
+  font-weight: 450;
+  cursor: pointer;
+  outline: 0;
+  color: #fff;
+  background-color: #d12d2d;
+  border-color: #d12d2d;
+  display: inline-block;
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s
+  ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+
+.deleteButtonClass:hover{
+  color: #fff;
+  background-color: #db0606;
+  border-color: #d12d2d;
 }
 
 #resetSearch, #search{
@@ -443,7 +472,7 @@ border-color: #0d6efd;
   margin-right: auto;
 }
 
-.alertContentClass {
+.alertContentClass, .confirmationProfileContent {
   background-color: #cddcff;
   font-weight: 600;
   font-size: 18px;
@@ -489,7 +518,7 @@ border-color: #0d6efd;
 }
 
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   height: 2.5rem;
