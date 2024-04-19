@@ -2,11 +2,11 @@ import "./style.css";
 import axios from "axios";
 import { User } from './type';
 
-export const API_BASE_URL = "http://localhost:3000";
+export const API_BASE_URL = "https://testapi-production-f5d2.up.railway.app";
 
 // JWT token that i will use so that a user don't need to login if token is still valid
 let token = localStorage.getItem("token");
-console.log(token);
+
 
 
 // Login and register div
@@ -35,12 +35,9 @@ const searchButton = document.getElementById("search");
 const resetSearchButton = document.getElementById("resetSearch");
 const searchInput = document.getElementById("filterExercise") as HTMLInputElement;
 
-// Profile button, close profile button, save profile changes button
+// Profile button, close profile button and profile edit form
 const profileButton = document.getElementById("profileButton");
 const closeProfileButton = document.getElementById("closeProfile");
-const saveProfileChangesButton = document.getElementById("saveProfileChanges");
-
-// Profile edit form element
 const profileForm = document.getElementById("profileForm");
 
 // Profile input elements
@@ -51,7 +48,6 @@ const profileLastName = document.getElementById("profileLastName") as HTMLInputE
 const profileFirstName = document.getElementById("profileFirstName") as HTMLInputElement;
 const profileWeight = document.getElementById("profileWeight") as HTMLInputElement;
 const profileHeight = document.getElementById("profileHeight") as HTMLInputElement;
-
 
 // View progress button and progress container
 const progressButton = document.getElementById("progressButton")!;
@@ -75,12 +71,12 @@ const showAlert = (message: string) => {
   window.focus()
 
  // Close the window after 5 seconds
-  // setTimeout(() => {
-  //     alertUser.style.display = "none";
-  //   }, 5000);
+  setTimeout(() => {
+      alertUser.style.display = "none";
+    }, 5000);
 };
 
-// Close the alert window if the button is clicked
+// Close the alert window if the close button is clicked
 document.addEventListener("click", (e) => {
   const target = e.target as HTMLElement;
   if (target.classList.contains("closeAlert")) {
@@ -121,6 +117,12 @@ const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
+// Name validation
+const isValidName = (name: string): boolean => {
+  const nameRegex = /^[a-zA-ZåäöÅÄÖ\s]+$/;
+  return nameRegex.test(name);
+}
+
  // Registration form event
  registrationForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -134,14 +136,13 @@ const isValidEmail = (email: string): boolean => {
     const weight = parseFloat((document.getElementById("weight") as HTMLInputElement).value);
     const height = parseFloat((document.getElementById("height") as HTMLInputElement).value);
 
-    
     // Check if the passwords match
     if (passwordInput !== confirmPasswordInput) {
       showAlert("Passwords do not match. Please enter the same password in both fields.");
       return;
     }
 
-    // Get trim them
+    // Get the fields and trim them
     const email = emailInput.trim();
     const password = passwordInput.trim();
     const first_name = first_nameInput.trim();
@@ -151,6 +152,16 @@ const isValidEmail = (email: string): boolean => {
     if (!isValidEmail(email)) {
       showAlert("Please enter a valid email address.");
     return;
+    }
+
+    // Validate first name
+    if (!isValidName(profileFirstName.value)) {
+    return;
+    }  
+
+    // Validate last name
+    if (!isValidName(profileLastName.value)) {
+      return;
     }
 
     // Validate password
@@ -180,8 +191,7 @@ const isValidEmail = (email: string): boolean => {
         weight,
         height
     };
-    console.log("Submitting registration form", registrationData);
-
+    
     try {
       const response = await axios.post(`${API_BASE_URL}/register`, registrationData);
   
@@ -199,12 +209,10 @@ const isValidEmail = (email: string): boolean => {
           const errorMsg = response.data?.data?.[0]?.msg || "Failed to register user. Please try again.";
           showAlert(errorMsg);
         } else {
-          console.log("Network error:", error);
-          showAlert("Failed to connect to the server. Please check your internet connection and try again.");
+          showAlert("Failed to register, please check all of the fields and try again.");
         }
       } else {
-        console.log("Error registering user:", error);
-        showAlert("An unexpected error occurred. Please try again later.");
+        showAlert("Failed to register, please reload the page and try again.");
       }
     }
   });
@@ -237,7 +245,6 @@ const isValidEmail = (email: string): boolean => {
 
     // JWT token
     let token  = response.data.token;
-    console.log(token);
 
     // Store the token
     localStorage.setItem("token", token);
@@ -247,13 +254,10 @@ const isValidEmail = (email: string): boolean => {
 
     // Update the token variable
     token = localStorage.getItem("token");
-    console.log("updated token", token);
 
     // Fetch user profile
     const profileResponse = await axios.get(`${API_BASE_URL}/profile`);
     userInfo = profileResponse.data;
-    console.log("User profile:", userInfo);
-    console.log("User's first name:", userInfo.data.first_name);
 
     // Update the welcome page so it's adapted for each uniq user
     welcomeUser!.innerHTML = `Welcome ${userInfo.data.first_name}`;
@@ -271,11 +275,8 @@ const isValidEmail = (email: string): boolean => {
     // Fetch progress data after successful login
     fetchProgress(token);
 
-    
-
   } catch (error) {
-    console.log("Login failed:", error);
-    showAlert("Failed to login. Please check your email and password and try again.")
+    showAlert("Failed to login. Please check your email and password then try again.")
   }
 });
 
@@ -285,7 +286,6 @@ logoutButton?.addEventListener("click", () => {
   // Remove token from local storage
   localStorage.removeItem("token");
   token = null;
-  console.log("logout token shall be null", token);
 
   // Show initial start
   toggleElement(homeApp!, false);
@@ -327,14 +327,13 @@ const autoLogin = async () => {
       return;
     }
 
-    // Fetch user profile using the token
+    // Fetch user profile using the token from local storage
     const response = await axios.get(`${API_BASE_URL}/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
     // User profile fetched successfully
     const profileData = response.data;
-    console.log("Auto login successful. User profile:", profileData);
 
     // Update the welcome page
     welcomeUser!.innerHTML = `Welcome ${profileData.data.first_name}`;
@@ -349,9 +348,8 @@ const autoLogin = async () => {
     fetchProgress(localStorage.getItem("token"));
   } catch (error) {
 
-    // Auto login failed
-    console.log("Auto login failed:", error);
-
+    // Auto login failed (token most likely expired)
+    
     // Remove old token
     localStorage.removeItem("token");
 
@@ -397,12 +395,10 @@ profileButton!.addEventListener("click", async () => {
       progressTitle.innerText = "View Your Progress";
     } else {
       // if GET fails
-      console.log("Failed to get user profile");
-      showAlert("Failed get user profile. Please try again.");
+      showAlert("Failed get user profile. Please reload the page and then try again.");
     }
   } catch (error) {
-    console.log("Failed to get user profile:", error);
-    showAlert("Failed get user profile. Please try again.");
+    showAlert("Failed get user profile. Try again in a few minutes.");
   }
 });
 
@@ -423,7 +419,8 @@ closeProfileButton!.addEventListener("click", () => {
 });
 
 // Event to save the profile changes to the database
-saveProfileChangesButton!.addEventListener("click", async () => {
+profileForm!.addEventListener("submit", async (e) => {
+  e.preventDefault();
   try {
     const token = localStorage.getItem("token");
 
@@ -477,7 +474,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // If the request is successful reset the form and hide it, update the H1 with the new username if it's updated, and alert the user
+    // If the request is successful
     showAlert("Profile updated successfully!");
 
     // Reset the form
@@ -494,8 +491,7 @@ saveProfileChangesButton!.addEventListener("click", async () => {
 
     // If the user don't update the email, updatedUser.email will be undefined
     if (updatedUser.email !== undefined) {
-      console.log("updated", updatedUser.email, "original",originalProfile.data.email)
-      
+    
       // If email is updated, show the alert and force user to log in again with new email
       showAlert("You need to log in again with your new email.");
       
@@ -525,7 +521,6 @@ saveProfileChangesButton!.addEventListener("click", async () => {
     }
   
   } catch (error: any) {
-      console.log("Error updating profile:", error);
       // If the response contains error data, extract the msg and display in an alert
       if (error.response.data.data.length > 0) {
         const errorMessage = error.response.data.data[0].msg;
@@ -544,8 +539,7 @@ const fetchProgress = async (token: string | null) => {
       });
 
       // progressData will be all of the progress's
-      let progressData = response.data.data; 
-      console.log(progressData);
+      let progressData = response.data.data;
 
       // Initially hide progress container
       progressContainer.style.display = "none";
@@ -553,12 +547,9 @@ const fetchProgress = async (token: string | null) => {
       // Sort progress data by date with the most recent first
       progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-      console.log("User progress:", progressData);
-
       // Loop through the progress's and create a li for each
       progressData.forEach((progress: any) => {
           const { id, date, exercise, weight, reps } = progress;
-          console.log(`ID: ${id}, Date: ${date}, Exercise: ${exercise}, Weight: ${weight}, Reps: ${reps}`);
 
           // Format the date to "YYYY-MM-DD"
           const humanDate = new Date(date).toISOString().split("T")[0];
@@ -593,14 +584,13 @@ const fetchProgress = async (token: string | null) => {
               // If confirmed, delete the selected progress
               confirmButton.addEventListener("click", async () => {
                   
-                // Delete the progress from the database
+                  // Delete the progress from the database
                   await axios.delete(`${API_BASE_URL}/progress/${id}`, {
                       headers: { Authorization: `Bearer ${token}` }
                   });
                   
                   // If DELETE is successful, delete it from the list as well
                   progressItem.remove();
-                  console.log("Progress item deleted successfully");
                   showAlert("Progress deleted successfully")
                   
                   // Hide confirmation window
@@ -612,8 +602,7 @@ const fetchProgress = async (token: string | null) => {
                   confirmationWindow.style.display = "none";
               });
               } catch (error) {
-                  console.log("Failed to delete progress:", error);
-                  showAlert("Failed to delete progress.");
+                  showAlert("Failed to delete progress, reload the page then try again.");
               }
           });
 
@@ -622,7 +611,7 @@ const fetchProgress = async (token: string | null) => {
       });
 
   } catch (error) {
-      console.log("Failed to get progress's:", error);
+    showAlert("Failed to get your progress. Please try again.");
   }
 };
 
@@ -655,14 +644,14 @@ addProgressButton?.addEventListener("click", () => {
       progressTitle.innerText = "View Your Progress";
 });
 
-// Submit even to do a POST of the new progress
+// Submit event to do a POST of the new progress
 addProgressForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   
   const token = localStorage.getItem("token");
   if (token) {
     localStorage.getItem(token);
-  } else showAlert("You need to logout and in to do this.")
+  } else showAlert("Failed to add a new progress, reload the page then try again.")
  
   // Get the values from the form fields
   const date = (document.getElementById("date") as HTMLInputElement).value;
@@ -683,8 +672,6 @@ addProgressForm?.addEventListener("submit", async (e) => {
     await axios.post(`${API_BASE_URL}/progress`, progressData, {
       headers: { Authorization: `Bearer ${token}` }
     });
-
-    console.log(progressData);
 
     // If the POST is successful, hide the form
     toggleElement(addProgressForm!, false);
@@ -711,7 +698,6 @@ addProgressForm?.addEventListener("submit", async (e) => {
 
     showAlert("Progress added successfully!");
   } catch (error) {
-    console.log("Error adding progress:", error);
     showAlert("Failed to add progress. Please try again.");
   }
 });
@@ -733,16 +719,14 @@ progressList!.addEventListener("click", (e) => {
   if (target.classList.contains("editProgress")) {
     toggleElement(addProgressForm!, false);
     toggleElement(progressContainer!, false);
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
-    const progressItem = target.closest("li")
+    progressButton.innerText = "Show Progress";
+     progressTitle.innerText = "View Your Progress";
+    const progressItem = target.closest("li");
     const id = progressItem?.id.split("-")[1];
 
     // Extract the value of the fields and slicing it accordingly from the selected item in progress list
     const dateElement = progressItem!.querySelector("p:nth-of-type(1)")!.textContent!.trim()
-    console.log("Not sliced date:",dateElement);
     const date = dateElement!.slice(6);
-    console.log("Sliced date:", date)
       
     const exercise = progressItem!.querySelector("p:nth-of-type(2)")!.innerHTML!.slice(14);
     const weightString = progressItem!.querySelector("p:nth-of-type(3)")!.textContent!.slice(8);
@@ -755,7 +739,7 @@ progressList!.addEventListener("click", (e) => {
     (document.getElementById("editExercise") as HTMLInputElement).value = exercise;
     (document.getElementById("editExerciseWeight") as HTMLInputElement).value = weight;
     (document.getElementById("editReps") as HTMLInputElement).value = reps;
-    console.log("This is the id of the selected progress:", id)
+
     // Show the edit form
     toggleElement(editProgressForm!, true);
   }
@@ -781,8 +765,6 @@ editProgressForm!.addEventListener("submit", async (e) => {
     reps
   };
 
-  console.log(updatedProgressData);
-
   try {
     // Send a PATCH request to update the selected progress
     await axios.patch(`${API_BASE_URL}/progress/${id}`, updatedProgressData, {
@@ -799,17 +781,16 @@ editProgressForm!.addEventListener("submit", async (e) => {
     // Clear search field
     searchInput.value = "";
 
-    // Remove the user's old progress list from DOM
+    // Remove the user's old progress list
     while (progressList!.firstChild) {
       progressList!.removeChild(progressList!.firstChild);
     }
 
-    // Update the progress list and send it to DOM
+    // Fetch the updated progress list
     fetchProgress(token);
 
     showAlert("Progress updated successfully!");
   } catch (error) {
-    console.log("Error updating progress:", error);
     showAlert("Failed to update progress. Please try again.");
   }
 });
@@ -831,14 +812,23 @@ const filterExercise = (e: any) => {
       return;
   }
 
+  // If found exercise this will change to true
+  let found = false;
+
   progressItems.forEach((progressItem) => {
       const exerciseName = progressItem.querySelector("p:nth-of-type(2)")!.innerHTML.toLowerCase().trim().split(" <br> ")[1];
       if (exerciseName.includes(userSearch)) {
           progressItem.style.display = "flex";
+          found = true;
       } else {
           progressItem.style.display = "none";
       }
   });
+  
+  // if not a single exercise matched the search, reply with showAlert
+  if (!found) {
+    showAlert("We couldn't find any matching exercises. Please try a different search.");
+  }
 };
 
 // Adding the event to both as a submit and click on the search button

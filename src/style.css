@@ -48,7 +48,7 @@ h3 {
 }
 
 #app {
-  /* height: 100vh; */
+  height: 100%;
   width: 100%;
   text-align: center;
 }
@@ -62,10 +62,7 @@ justify-content: center;
 .hide {
   display: none;
 }
-/* mainButtonClass
-#registerButton, #registerFormButton, #loginFormButton, #addButton, 
-#updateProgressButton, #profileButton, #progressButton , #search, 
-#saveProfileChanges, .closeAlert, #confirmButton */
+
 .mainButtonClass{
   display: block;
   margin: 20px auto;
@@ -85,21 +82,12 @@ justify-content: center;
   ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-/* mainButtonclass(hover)
-#registerButton:hover, #registerFormButton:hover, 
-#loginFormButton:hover, #addButton:hover, 
-#updateProgressButton:hover, #profileButton:hover, #progressButton:hover,
-#search:hover, #saveProfileChanges:hover, .closeAlert:hover,
-#confirmButton:hover   */
 .mainButtonClass:hover{
   color: #fff;
   background-color: #0b5ed7;
   border-color: #0a58ca;
 }
 
-/* secondaryButtonClass
-#loginButton, #logoutButton, #cancelProgressButton, #cancelAddProgressButton,
-#addProgressButton, #resetSearch, #closeProfile, #cancelConfirmButton  */
 .secondaryButtonClass{
 display: block;
 margin: 20px auto;
@@ -119,22 +107,40 @@ color: #0d6efd;
 border-color: #0d6efd;
 }
 
-/* secondaryButtonClass(hover)
-#loginButton:hover, #cancelProgressButton:hover, #cancelAddProgressButton:hover,
-#logoutButton:hover, #addProgressButton:hover, #resetSearch:hover, #closeProfile:hover,
-#cancelConfirmButton:hover  */
 .secondaryButtonClass:hover{
   color: #fff;
   background-color: #0d6efd;
   border-color: #0d6efd;
 }
 
+#resetSearch, #search{
+  margin-top: 1rem;
+}
+#registerButton, #loginButton {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.loginOrRegister {
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+}
+
 #registerFormButton, #loginFormButton{
+  margin-top: 0.5rem;
   margin-bottom: 0;
 }
-/* mainFormClass
-.registrationForm, .loginForm, .addProgressFormClass, .editProgressFormClass, 
-#progressContainer, #profileForm */
+
+#loginForm {
+  margin-top: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+#registrationForm {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+}
 
 #progressContainer{
   width: 300px;
@@ -191,6 +197,8 @@ border-color: #0d6efd;
 }
 
 .mainFormClass label{
+  margin-left: 0.9rem;
+  margin-right: auto;
   font-size: 18px;
   font-weight: 500;
   margin-bottom: 5px;
@@ -332,18 +340,22 @@ border-color: #0d6efd;
 #progressContainer p:nth-child(1) {
   width: 20%;
   padding-left: 0.2rem;
+  background-color: transparent;
 }
 
 #progressContainer p:nth-child(2) {
   width: 30%;
+  background-color: transparent;
 }
 
 #progressContainer p:nth-child(3) {
   width: 20%;
+  background-color: transparent;
 }
 
 #progressContainer p:nth-child(4) {
   width: 20%;
+  background-color: transparent;
 }
 
 #progressContainer p {
@@ -356,12 +368,14 @@ border-color: #0d6efd;
   display: flex;
   flex-direction: column;
   margin-right: 0.2rem;
+  background-color: transparent;
 }
 
 .progressActions span {
   font-size: 18px;
   margin-bottom: 0.3rem;
   cursor: pointer;
+  background-color: transparent;
 }
 
 #addProgressForm, #editProgressForm {
@@ -388,8 +402,6 @@ border-color: #0d6efd;
   margin-bottom: 0;
 }
 
-/* buttonsDivClass
-#editProgressButtons, #addProgressButtons, #registerLoginButtons  */
 .buttonsDivClass{
   display: flex;
   width: 100%;
@@ -522,10 +534,9 @@ border-color: #0d6efd;
 
 }
 
-/* Tablet */
+/* Tablet and desktop */
 @media only screen and (min-width: 600px) {
   
-
   * {
     font-weight: 300;
     font-size: 18px;
@@ -606,6 +617,7 @@ border-color: #0d6efd;
   .mainFormClass label{
     font-size: 22px;
     font-weight: 600;
+    margin-left: 1.6rem;
   }
 
   .mainButtonClass{
@@ -662,15 +674,5 @@ border-color: #0d6efd;
   .footer p {
     font-size: 20px;
   }
-
-}
-
-/* Landscape tablet */
-@media only screen and (min-width: 992px) {
-
-}
-
-/* Desktop */
-@media only screen and (min-width: 1200px) {
 
 }
