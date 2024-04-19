@@ -7,8 +7,6 @@ export const API_BASE_URL = "https://testapi-production-f5d2.up.railway.app";
 // JWT token that i will use so that a user don't need to login if token is still valid
 let token = localStorage.getItem("token");
 
-
-
 // Login and register div
 const registerAndLogin = document.getElementById("appRegisterAndLogin");
 
