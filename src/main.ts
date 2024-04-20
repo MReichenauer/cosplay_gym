@@ -293,10 +293,9 @@ logoutButton?.addEventListener("click", () => {
   // Set flex direction on registerAndLogin div
   registerAndLogin!.style.flexDirection = "column";
 
-  // Reset progress window to initial state
+  // Reset progress button text to initial state
   progressButton.innerText = "Show Progress";
-  progressTitle.innerText = "View Your Progress";
-
+ 
   // Remove the user's progress list
   while (progressList!.firstChild) {
     progressList!.removeChild(progressList!.firstChild);
@@ -320,9 +319,8 @@ const autoLogin = async () => {
       // Set flex direction on registerAndLogin div
       registerAndLogin!.style.flexDirection = "column";
 
-      // Reset progress window to initial state
+      // Reset progress button text to initial state
       progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
       return;
     }
 
@@ -359,9 +357,9 @@ const autoLogin = async () => {
     // Set flex direction on registerAndLogin div
     registerAndLogin!.style.flexDirection = "column";
 
-    // Reset progress window to initial state
+    // Reset progress button text to initial state
     progressButton.innerText = "Show Progress";
-    progressTitle.innerText = "View Your Progress";
+   
   }
 };
 
@@ -391,7 +389,6 @@ profileButton!.addEventListener("click", async () => {
       toggleElement(profileForm!, true)
       
       progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
     } else {
       // if GET fails
       showAlert("Failed get user profile. Please reload the page and then try again.");
@@ -504,10 +501,9 @@ profileForm!.addEventListener("submit", async (e) => {
       // Set flex direction on registerAndLogin div
       registerAndLogin!.style.flexDirection = "column";
 
-      // Reset progress window to initial state
+      // Reset progress button text to initial state
       progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
-
+     
       // Remove the user's progress list
       while (progressList!.firstChild) {
         progressList!.removeChild(progressList!.firstChild);
@@ -651,11 +647,20 @@ const fetchProgress = async (token: string | null) => {
           headers: { Authorization: `Bearer ${token}` }
       });
 
-      // progressData will be all of the progress's
+      // All of the user's progress's
       let progressData = response.data.data;
 
       // Initially hide progress container
       progressContainer.style.display = "none";
+
+       // Check if there is any progress's for the user
+       if (progressData.length === 0) {
+        // If there is no progress's, tell the user that they need to add a progress to get started
+       progressTitle.textContent = "Add a progress to get started";
+    } else {
+        // If there is at least 1 progress, display no message
+        progressTitle.textContent = "";
+    }
 
       // Sort progress data by date with the most recent first
       progressData.sort((a: { date: Date }, b: { date: Date }) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -708,6 +713,15 @@ const fetchProgress = async (token: string | null) => {
                   
                   // Hide confirmation window
                   confirmationWindow.style.display = "none"; 
+                  // Get all of the li's
+                  const progressItems = progressList?.querySelectorAll("li");
+
+                  // Check if there is any progress's for the user
+                  if (progressItems?.length === 0) {
+                    // If there is no progress's, hide the list
+                    toggleElement(progressContainer!, false)
+                    progressButton.innerText = "Show Progress";  
+                  } 
               });
               
               // If canceled hide confirm window
@@ -731,17 +745,24 @@ const fetchProgress = async (token: string | null) => {
 // Event to show and hide the progress's list
 progressButton.addEventListener("click", () => {
 
-  // Toggle the visibility of the container for the progress's
-  toggleElement(progressContainer, progressContainer.style.display === "none");
+  const progressItems = progressList?.querySelectorAll("li");
 
-  // Change the button text and title based on if container is hidden or visible
-  if (progressContainer.style.display === "none") {
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
-  } else {
-      progressButton.innerText = "Hide Progress";
-      progressTitle.innerText = "Hide Your Progress";
-  }
+    // Check if there is any progress's for the user
+    if (progressItems?.length === 0) {
+      // If there is no progress's, tell the user that they need to add a progress
+      showAlert("Looks like there's nothing here. Begin by adding a progress!");
+    } else {
+
+    // Display the progress's
+    toggleElement(progressContainer, progressContainer.style.display === "none");
+
+    // Change the button text based on if progress list is hidden or visible
+    if (progressContainer.style.display === "none") {
+        progressButton.innerText = "Show Progress";
+    } else {
+        progressButton.innerText = "Hide Progress";
+    }
+}
 });
 
 // Initially hide the form to add a new progress 
@@ -753,8 +774,7 @@ addProgressButton?.addEventListener("click", () => {
   toggleElement(addProgressForm!, true);
   toggleElement(editProgressForm!, false);
   toggleElement(progressContainer!, false);
-      progressButton.innerText = "Show Progress";
-      progressTitle.innerText = "View Your Progress";
+      progressButton.innerText = "Show Progress";    
 });
 
 // Submit event to do a POST of the new progress
@@ -793,10 +813,9 @@ addProgressForm?.addEventListener("submit", async (e) => {
     while (progressList!.firstChild) {
       progressList!.removeChild(progressList!.firstChild);
     }
-    // Reset progress button and text to initial state
+    // Reset progress button text to initial state
     progressButton.innerText = "Show Progress";
-    progressTitle.innerText = "View Your Progress";
-
+   
     // Clear search field
     searchInput.value = "";
 
@@ -833,7 +852,7 @@ progressList!.addEventListener("click", (e) => {
     toggleElement(addProgressForm!, false);
     toggleElement(progressContainer!, false);
     progressButton.innerText = "Show Progress";
-     progressTitle.innerText = "View Your Progress";
+
     const progressItem = target.closest("li");
     const id = progressItem?.id.split("-")[1];
 
@@ -887,9 +906,8 @@ editProgressForm!.addEventListener("submit", async (e) => {
     // If the PATCH is successful, hide the edit form
     toggleElement(editProgressForm!, false);
 
-    // Reset progress button and text to initial state
+    // Reset progress button text to initial state
     progressButton.innerText = "Show Progress";
-    progressTitle.innerText = "View Your Progress";
 
     // Clear search field
     searchInput.value = "";
