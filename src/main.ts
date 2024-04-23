@@ -194,6 +194,7 @@ const isValidName = (name: string): boolean => {
       const response = await axios.post(`${API_BASE_URL}/register`, registrationData);
   
       if (response.status === 201) {
+        (registrationForm as HTMLFormElement).reset();
         showAlert("Your registration was successful!");
         toggleElement(loginForm!, true);
         toggleElement(registrationForm!, false);
@@ -568,6 +569,11 @@ deleteProfileButton!.addEventListener("click", async () => {
               await axios.delete(`${API_BASE_URL}/profile`, {
                   headers: { Authorization: `Bearer ${token}` }
               });
+
+              // Remove the user's progress list
+              while (progressList!.firstChild) {
+                progressList!.removeChild(progressList!.firstChild);
+              }
 
               // If DELETE is successful, remove the token and show initial start
               localStorage.removeItem("token");
